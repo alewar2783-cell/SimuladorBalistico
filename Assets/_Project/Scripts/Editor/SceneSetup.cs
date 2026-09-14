@@ -214,11 +214,11 @@ namespace BallisticSim.Editor
             titleWeapon.fontSize = 18;
             titleWeapon.fontStyle = FontStyles.Bold;
 
-            TMP_Text angleLabel = CreateLabel(weaponPanel.transform, "AngleLabel", "Angle: 45.0°", ref yOffset);
-            Slider angleSlider = CreateSlider(weaponPanel.transform, "AngleSlider", ref yOffset, 0f, 90f, 45f);
+            TMP_Text angleLabel = CreateLabel(weaponPanel.transform, "AngleLabel", "Angle: 5.0°", ref yOffset);
+            Slider angleSlider = CreateSlider(weaponPanel.transform, "AngleSlider", ref yOffset, 0f, 90f, 5f);
 
-            TMP_Text forceLabel = CreateLabel(weaponPanel.transform, "ForceLabel", "Initial Force: 20N", ref yOffset);
-            Slider forceSlider = CreateSlider(weaponPanel.transform, "ForceSlider", ref yOffset, 10f, 200f, 20f);
+            TMP_Text forceLabel = CreateLabel(weaponPanel.transform, "ForceLabel", "Initial Force: 50N", ref yOffset);
+            Slider forceSlider = CreateSlider(weaponPanel.transform, "ForceSlider", ref yOffset, 10f, 200f, 50f);
 
             TMP_Text massLabel = CreateLabel(weaponPanel.transform, "MassLabel", "Mass: 1.00kg", ref yOffset);
             Slider massSlider = CreateSlider(weaponPanel.transform, "MassSlider", ref yOffset, 0.1f, 10f, 1f);
@@ -266,11 +266,11 @@ namespace BallisticSim.Editor
             TMP_Text boxSizeLabel = CreateLabel(targetPanel.transform, "BoxSizeLabel", "Box Size: 1.00m", ref tyOffset);
             Slider boxSizeSlider = CreateSlider(targetPanel.transform, "BoxSizeSlider", ref tyOffset, 0.1f, 2f, 1f);
 
-            TMP_Text boxMassLabel = CreateLabel(targetPanel.transform, "BoxMassLabel", "Box Mass: 2.0kg", ref tyOffset);
-            Slider boxMassSlider = CreateSlider(targetPanel.transform, "BoxMassSlider", ref tyOffset, 0.1f, 10f, 2f);
+            TMP_Text boxMassLabel = CreateLabel(targetPanel.transform, "BoxMassLabel", "Box Mass: 1.0kg", ref tyOffset);
+            Slider boxMassSlider = CreateSlider(targetPanel.transform, "BoxMassSlider", ref tyOffset, 0.1f, 10f, 1f);
 
-            TMP_Text jointForceLabel = CreateLabel(targetPanel.transform, "JointForceLabel", "Joint Force: 200N", ref tyOffset);
-            Slider jointForceSlider = CreateSlider(targetPanel.transform, "JointForceSlider", ref tyOffset, 10f, 2000f, 200f);
+            TMP_Text jointForceLabel = CreateLabel(targetPanel.transform, "JointForceLabel", "Joint Force: 50N", ref tyOffset);
+            Slider jointForceSlider = CreateSlider(targetPanel.transform, "JointForceSlider", ref tyOffset, 10f, 2000f, 50f);
 
 
             // 3. TELEMETRY PANEL (Top Right)
