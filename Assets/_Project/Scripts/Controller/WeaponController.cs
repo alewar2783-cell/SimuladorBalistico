@@ -17,9 +17,9 @@ namespace BallisticSim.Core.Controllers
 
         private void OnValidate()
         {
-            if (_spawnPoint == null)
+            if (Application.isPlaying && _spawnPoint != null)
             {
-                Debug.LogWarning($"[{nameof(WeaponController)}] SpawnPoint is not assigned.", this);
+                // Optionally update rotation live in Editor if needed
             }
         }
     }

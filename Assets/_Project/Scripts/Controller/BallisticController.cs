@@ -33,6 +33,8 @@ namespace BallisticSim.Core.Controllers
 
         private void OnEnable()
         {
+            if (_view == null) return;
+            
             _view.OnAngleChanged += HandleAngleChanged;
             _view.OnForceChanged += v => _parameters.force = v;
             _view.OnMassChanged += v => _parameters.mass = v;
@@ -51,6 +53,8 @@ namespace BallisticSim.Core.Controllers
 
         private void OnDisable()
         {
+            if (_view == null) return;
+            
             _view.OnAngleChanged -= HandleAngleChanged;
             _view.OnFirePressed -= HandleFire;
             _view.OnCleanScenePressed -= HandleCleanScene;

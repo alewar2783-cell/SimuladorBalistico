@@ -19,6 +19,11 @@ namespace BallisticSim.Editor
         [MenuItem("BallisticSim/Setup Full Scene")]
         public static void SetupFullScene()
         {
+            if (Application.isPlaying)
+            {
+                Debug.LogError("Cannot run Scene Setup in Play Mode. Please stop playing first.");
+                return;
+            }
             CreateFolders();
             Material projectileMat = CreateMaterial("M_Projectile", Color.red);
             Material boxMat = CreateMaterial("M_Box", new Color(0.8f, 0.7f, 0.5f));

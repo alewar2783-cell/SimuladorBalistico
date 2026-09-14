@@ -65,6 +65,8 @@ namespace BallisticSim.Core.View
 
         private void OnEnable()
         {
+            if (_angleSlider == null) return;
+
             _angleSlider.onValueChanged.AddListener(v => { _angleLabelText.text = $"Angle: {v:F1}°"; OnAngleChanged?.Invoke(v); });
             _forceSlider.onValueChanged.AddListener(v => { _forceLabelText.text = $"Force: {v:F0}N"; OnForceChanged?.Invoke(v); });
             _massSlider.onValueChanged.AddListener(v => { _massLabelText.text = $"Mass: {v:F2}kg"; OnMassChanged?.Invoke(v); });
