@@ -192,7 +192,7 @@ namespace BallisticSim.Editor
 
             GameObject hudPanel = CreatePanel(canvasGo.transform, "HUDPanel",
                 new Vector2(0f, 1f), new Vector2(0f, 1f),
-                new Vector2(10f, -10f), new Vector2(320f, -10f),
+                new Vector2(10f, -10f), new Vector2(300f, 0f),
                 new Color(0f, 0f, 0f, 0.5f));
 
             float yOffset = -10f;
@@ -211,7 +211,7 @@ namespace BallisticSim.Editor
 
             GameObject telemetryPanel = CreatePanel(canvasGo.transform, "TelemetryPanel",
                 new Vector2(1f, 1f), new Vector2(1f, 1f),
-                new Vector2(-320f, -10f), new Vector2(-10f, -80f),
+                new Vector2(-10f, -10f), new Vector2(300f, 0f),
                 new Color(0f, 0f, 0f, 0.5f));
 
             float telY = -5f;
@@ -220,7 +220,7 @@ namespace BallisticSim.Editor
 
             GameObject reportPanel = CreatePanel(canvasGo.transform, "ReportPanel",
                 new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f),
-                new Vector2(-200f, -180f), new Vector2(200f, 180f),
+                Vector2.zero, new Vector2(400f, 0f),
                 new Color(0.1f, 0.1f, 0.1f, 0.9f));
 
             float repY = -10f;
@@ -338,7 +338,7 @@ namespace BallisticSim.Editor
         private static GameObject CreatePanel(
             Transform parent, string name,
             Vector2 anchorMin, Vector2 anchorMax,
-            Vector2 offsetMin, Vector2 offsetMax,
+            Vector2 anchoredPosition, Vector2 size,
             Color bgColor)
         {
             GameObject panel = new GameObject(name);
@@ -347,8 +347,9 @@ namespace BallisticSim.Editor
             RectTransform rt = panel.AddComponent<RectTransform>();
             rt.anchorMin = anchorMin;
             rt.anchorMax = anchorMax;
-            rt.offsetMin = offsetMin;
-            rt.offsetMax = offsetMax;
+            rt.pivot = anchorMin;
+            rt.anchoredPosition = anchoredPosition;
+            rt.sizeDelta = size;
 
             Image img = panel.AddComponent<Image>();
             img.color = bgColor;
