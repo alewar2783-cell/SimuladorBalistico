@@ -10,7 +10,7 @@ namespace BallisticSim.Core.Controllers
 
         public void SetAngle(float angleDegrees)
         {
-            transform.localRotation = Quaternion.Euler(-angleDegrees, 0f, 0f);
+            transform.localRotation = Quaternion.Euler(angleDegrees, 0f, 0f);
         }
 
         private void OnValidate()
