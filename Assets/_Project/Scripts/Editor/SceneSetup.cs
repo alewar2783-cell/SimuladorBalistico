@@ -382,10 +382,18 @@ namespace BallisticSim.Editor
             thirdPerson.ShoulderOffset = new Vector3(0.5f, 0.3f, 0f);
             thirdPerson.CameraDistance = 3f;
 
+            GameObject impactGo = new GameObject("ImpactCamera");
+            impactGo.transform.SetParent(rig.transform);
+            CinemachineCamera impact = impactGo.AddComponent<CinemachineCamera>();
+            impactGo.transform.position = new Vector3(15f, 5f, 30f); // Fixed looking at 30m
+            impactGo.transform.rotation = Quaternion.Euler(15f, -90f, 0f); // Look left towards the wall
+            impact.Priority = 5;
+
             CameraController cc = rig.AddComponent<CameraController>();
             SerializedObject so = new SerializedObject(cc);
             so.FindProperty("_overviewCamera").objectReferenceValue = overview;
             so.FindProperty("_trackingCamera").objectReferenceValue = tracking;
+            so.FindProperty("_impactCamera").objectReferenceValue = impact;
             so.ApplyModifiedPropertiesWithoutUndo();
 
             return rig;

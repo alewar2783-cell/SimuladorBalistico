@@ -153,13 +153,21 @@ namespace BallisticSim.Core.Controllers
             _results.impactPoint = impactPoint;
             _results.relativeVelocity = relativeVelocity;
             _results.collisionImpulse = impulse;
+            
+            _cameraController.SetImpactActive(_activeProjectile.transform);
 
             StartCoroutine(ResolutionPhase());
         }
 
         private IEnumerator ResolutionPhase()
         {
-            yield return new WaitForSeconds(RESOLUTION_DELAY);
+            Time.timeScale = 0.2f;
+            Time.fixedDeltaTime = 0.02f * Time.timeScale;
+            
+            yield return new WaitForSecondsRealtime(RESOLUTION_DELAY);
+            
+            Time.timeScale = 1f;
+            Time.fixedDeltaTime = 0.02f;
 
             _results.brokenJoints = _spawner.CountBrokenJoints();
             int score = _results.brokenJoints;
@@ -178,6 +186,9 @@ namespace BallisticSim.Core.Controllers
         private void HandleCleanScene()
         {
             StopAllCoroutines();
+
+            Time.timeScale = 1f;
+            Time.fixedDeltaTime = 0.02f;
 
             if (_activeProjectile != null)
             {
