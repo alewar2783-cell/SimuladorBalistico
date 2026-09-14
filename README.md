@@ -5,46 +5,53 @@
 
 ## 🚀 Descripción General
 
-Este proyecto es un simulador balístico interactivo desarrollado en Unity 6.3. Permite al usuario configurar variables físicas precisas para disparar un proyectil contra estructuras paramétricas generadas proceduralmente. 
+Este proyecto es un simulador balístico interactivo desarrollado en Unity 6.3 que cumple estrictamente con los requisitos de simulación física mediante `Rigidbody` y `Joints`. Permite al usuario configurar variables físicas precisas para disparar un proyectil contra estructuras paramétricas y medir los resultados del impacto.
 
-El simulador está diseñado para registrar datos telemétricos en tiempo real y evaluar el impacto físico, calculando la transferencia de energía, daños estructurales y distancias. Al finalizar cada disparo, el usuario recibe un "Reporte de Tiro" detallado con la opción de exportar los resultados para su posterior análisis.
+---
 
-## ✨ Características Principales
+## ✅ Cumplimiento de la Consigna (Requisitos Mínimos)
 
-*   **Configuración Paramétrica:** Ajuste en tiempo real del ángulo de disparo, fuerza, masa y tamaño del proyectil mediante una interfaz minimalista.
-*   **Físicas Avanzadas:** Uso intensivo del sistema de físicas de Unity (`Rigidbody`). Los proyectiles utilizan detección de colisión `Continuous Dynamic` para evitar que la bala atraviese objetos a altas velocidades (*tunneling*)[cite: 1].
-*   **Generación Procedural de Objetivos:** Un spawner automático crea muros de cajas conectadas dinámicamente mediante `Joints` (Fixed/Hinge), garantizando estabilidad física antes del impacto.
-*   **Cámaras Dinámicas:** Integración de cámara cinemática que transita desde una vista isométrica panorámica (configuración) a una cámara en tercera persona anclada al proyectil durante el vuelo.
-*   **Telemetría y Reportes:** Lectura en tiempo real de la velocidad y coordenadas espaciales (X, Y, Z). Al finalizar el impacto, se genera un reporte y un puntaje basado en la cantidad de uniones (*joints*) destruidas.
+### 1. Controles de disparo en pantalla
+* El simulador incluye una interfaz de usuario completa (Canvas) dividida en dos paneles interactivos.
+* **Ángulo, fuerza y masa del proyectil:** Se configuran en tiempo real mediante *Sliders* ubicados en el panel superior izquierdo. Además, se permite configurar el tamaño y la capacidad de rebote del proyectil.
 
-## 🏗️ Arquitectura del Proyecto (MVC)
+### 2. Disparo físico
+* **Proyectil:** Es un GameObject instanciado dinámicamente que cuenta con un `SphereCollider` y un `Rigidbody`.
+* **Lanzamiento:** Utiliza el sistema de físicas nativo. Al disparar, se calcula la rotación del cañón en base al ángulo configurado y se aplica fuerza usando `Rigidbody.AddForce(direction, ForceMode.Impulse)`. El `Collision Detection` está seteado en `Continuous Dynamic` para evitar *tunneling*.
 
-El código fuente está estrictamente estructurado bajo el patrón **Model-View-Controller** para garantizar la escalabilidad y limpieza del código[cite: 2]:
+### 3. Escena de objetivos
+* **Estructuras:** Se genera un muro paramétrico de cajas. El usuario puede elegir las filas, columnas, masa y tamaño desde el panel inferior.
+* **Joints:** Las cajas se conectan estructuralmente mediante `FixedJoint`. La fuerza de ruptura (*Break Force*) es totalmente personalizable.
+* **Estabilidad:** La cuadrícula se genera con precisión matemática, espaciando los bloques exactamente según su escala (0.0mm de overlap) para garantizar una estabilidad estructural perfecta sin repulsión inicial.
 
-*   **Model (`BallisticModel.cs`):** Contiene exclusivamente los datos del simulador (parámetros de entrada como fuerza y masa, y resultados como distancia y tiempo de vuelo) y las reglas de negocio[cite: 2]. No tiene dependencias de la interfaz[cite: 2].
-*   **View (`BallisticView.cs`):** Muestra la información al usuario (paneles, textos, Sliders) y captura su interacción[cite: 2]. Es una interfaz limpia, sin reglas de simulación integradas[cite: 2].
-*   **Controller (`BallisticController.cs`):** El núcleo lógico. Recibe la interacción del usuario desde la vista, actualiza los datos del modelo y solicita la ejecución de la simulación física a Unity[cite: 2].
+### 4. Registro del resultado
+* Durante el vuelo del proyectil, se muestra telemetría en vivo (velocidad actual y coordenadas espaciales).
+* Al impactar, el tiempo se ralentiza (Slow-Motion) para observar las colisiones. Luego de 3 segundos, se despliega el **Reporte de Tiro**.
+* **Datos guardados y mostrados:** 
+  * Tiempo de vuelo
+  * Punto exacto de impacto (Coordenadas X, Y, Z)
+  * Velocidad relativa al momento del choque
+  * Impulso de colisión
+  * Piezas/Joints derribados (Puntuación)
+* Los datos pueden ser exportados a un archivo CSV local para su evaluación mediante el botón **Exportar Datos**.
 
-## 🎮 Controles y Uso de la Interfaz
+---
 
-1.  **Fase de Preparación:** Al iniciar, la cámara general muestra el cañón y el entorno. El usuario utiliza los Sliders (rango de ángulo, por ejemplo, de 0 a 90 grados[cite: 1]) para definir las variables iniciales y la distancia de la estructura objetivo.
-2.  **Disparo:** Al presionar el botón "DISPARAR", el `Controller` instancia el proyectil y le aplica un impulso físico instantáneo (`ForceMode.Impulse`) dictado por los parámetros del `Model`[cite: 1].
-3.  **Seguimiento:** La cámara cambia automáticamente para seguir la trayectoria de la bala. En pantalla se muestra la telemetría en vivo.
-4.  **Resolución:** Al impactar contra el muro objetivo, el motor de físicas calcula las colisiones. Luego de unos segundos, la interfaz muestra el "Reporte de Tiro".
+## 🎮 Cómo Jugar
 
-## 📊 Exportación de Datos
+1. **Abrir la escena:** Abre `Assets/_Project/Scenes/SimuladorBalistica.unity`.
+2. **Setup de Escena (Solo Editor):** Si la escena está vacía, ve al menú superior de Unity y haz clic en **BallisticSim -> Setup Full Scene**. Esto construirá toda la arquitectura, jerarquía, modelos, cámaras y UI automáticamente.
+3. **Play:** Presiona Play en Unity.
+4. **Configurar:** Ajusta los sliders del arma (arriba) y del muro objetivo (abajo). Recomendamos probar el tiro inicial por defecto que apunta directo al centro del muro.
+5. **Disparar:** Haz clic en **FIRE**. La cámara Cinemachine seguirá el proyectil de cerca.
+6. **Resolución:** Observa el impacto en cámara lenta. Analiza el puntaje y presiona **CLEAN SCENE** para volver a intentar con distintos parámetros.
 
-El simulador cuenta con una herramienta nativa para investigación y análisis de datos. Desde el panel de "Reporte de Tiro", el usuario puede hacer clic en **Exportar Datos**. 
-Esto genera un archivo local que incluye:
-*   Velocidad inicial y masa.
-*   Ángulo de lanzamiento.
-*   Tiempo total de vuelo.
-*   Coordenadas exactas del punto de impacto.
-*   Magnitud del impulso y velocidad relativa al momento del choque.
-*   Cantidad de cajas derribadas/joints rotos.
+## 📂 Estructura de Assets y Arquitectura (MVC)
+El código está separado en 3 capas puras ubicadas en `Assets/_Project/Scripts/`:
+* `Model/`: Clases serializables con datos puros, sin dependencias de Unity UI.
+* `View/`: Scripts encargados puramente de actualizar el TextMeshPro y los Sliders.
+* `Controller/`: El cerebro. Suscribe eventos, lanza el proyectil y orquesta las físicas.
+* `Camera/`, `Spawner/`, `Editor/`, `Projectile/`: Sistemas modulares aislados.
 
-## ⚙️ Tecnologías Utilizadas
-*   **Motor:** Unity 6.3
-*   **Lenguaje:** C#
-*   **UI:** Unity Canvas & TextMeshPro
-*   **Cámaras:** Unity Cinemachine / Splines
+## 📝 Criterios de Evaluación y Commits
+El repositorio de Git mantiene un historial claro de commits bajo el formato *Conventional Commits* (ej. `feat: ...`, `fix: ...`), dividiendo el desarrollo lógico desde la arquitectura base hasta la implementación de Cinemachine y físicas avanzadas.
