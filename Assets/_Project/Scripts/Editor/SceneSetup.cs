@@ -360,6 +360,15 @@ namespace BallisticSim.Editor
 
         private static GameObject CreateCameraRig()
         {
+            Camera mainCam = Camera.main;
+            if (mainCam != null)
+            {
+                if (mainCam.GetComponent<Unity.Cinemachine.CinemachineBrain>() == null)
+                {
+                    mainCam.gameObject.AddComponent<Unity.Cinemachine.CinemachineBrain>();
+                }
+            }
+
             GameObject existing = GameObject.Find("CameraRig");
             if (existing != null) Object.DestroyImmediate(existing);
 
