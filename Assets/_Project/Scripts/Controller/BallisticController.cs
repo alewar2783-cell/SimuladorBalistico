@@ -5,6 +5,7 @@ using BallisticSim.Core.View;
 using BallisticSim.Core.Projectile;
 using BallisticSim.Core.Spawner;
 using BallisticSim.Core.Data;
+using BallisticSim.Core.Camera;
 
 namespace BallisticSim.Core.Controllers
 {
@@ -17,6 +18,7 @@ namespace BallisticSim.Core.Controllers
         [SerializeField] private WeaponController _weapon;
         [SerializeField] private TargetSpawner _spawner;
         [SerializeField] private GameObject _projectilePrefab;
+        [SerializeField] private CameraController _cameraController;
 
         private BallisticParameters _parameters = new BallisticParameters();
         private BallisticResults _results = new BallisticResults();
@@ -113,6 +115,7 @@ namespace BallisticSim.Core.Controllers
             }
 
             _view.SetFireButtonInteractable(false);
+            _cameraController.FollowProjectile(_activeProjectile.transform);
         }
 
         private void HandleImpact(Vector3 impactPoint, float flightTime, float relativeVelocity, float impulse)
@@ -161,6 +164,7 @@ namespace BallisticSim.Core.Controllers
             _view.HideReport();
             _view.ClearTelemetry();
             _view.SetFireButtonInteractable(true);
+            _cameraController.SetOverviewActive();
         }
 
         private void HandleExportData()
