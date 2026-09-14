@@ -169,7 +169,7 @@ namespace BallisticSim.Editor
             GameObject ground = GameObject.CreatePrimitive(PrimitiveType.Plane);
             ground.name = "Ground";
             ground.transform.position = Vector3.zero;
-            ground.transform.localScale = new Vector3(10f, 1f, 10f);
+            ground.transform.localScale = new Vector3(50f, 1f, 50f);
             ground.GetComponent<Renderer>().sharedMaterial = mat;
             ground.isStatic = true;
             return ground;
@@ -198,8 +198,8 @@ namespace BallisticSim.Editor
             float yOffset = -10f;
             Slider angleSlider = CreateSlider(hudPanel.transform, "AngleSlider", ref yOffset, 0f, 90f, 45f);
             TMP_Text angleLabel = CreateLabel(hudPanel.transform, "AngleLabel", "Angle: 45.0°", ref yOffset);
-            Slider forceSlider = CreateSlider(hudPanel.transform, "ForceSlider", ref yOffset, 100f, 2000f, 500f);
-            TMP_Text forceLabel = CreateLabel(hudPanel.transform, "ForceLabel", "Force: 500N", ref yOffset);
+            Slider forceSlider = CreateSlider(hudPanel.transform, "ForceSlider", ref yOffset, 10f, 100f, 20f);
+            TMP_Text forceLabel = CreateLabel(hudPanel.transform, "ForceLabel", "Force: 20N", ref yOffset);
             Slider massSlider = CreateSlider(hudPanel.transform, "MassSlider", ref yOffset, 0.1f, 10f, 1f);
             TMP_Text massLabel = CreateLabel(hudPanel.transform, "MassLabel", "Mass: 1.00kg", ref yOffset);
             Slider sizeSlider = CreateSlider(hudPanel.transform, "BulletSizeSlider", ref yOffset, 0.05f, 1f, 0.2f);
@@ -235,8 +235,9 @@ namespace BallisticSim.Editor
             TMP_Text repBroken = CreateLabel(reportPanel.transform, "ReportBrokenJoints", "Broken Joints: ---", ref repY);
             TMP_Text repScore = CreateLabel(reportPanel.transform, "ReportScore", "Score: ---", ref repY);
             repScore.fontSize = 22;
+            Button cleanButton = CreateButton(hudPanel.transform, "CleanSceneButton", "CLEAN SCENE", ref yOffset, new Color(0.3f, 0.5f, 0.3f));
+            cleanButton.gameObject.SetActive(false);
 
-            Button cleanButton = CreateButton(reportPanel.transform, "CleanSceneButton", "CLEAN SCENE", ref repY, new Color(0.3f, 0.5f, 0.3f));
             Button exportButton = CreateButton(reportPanel.transform, "ExportDataButton", "EXPORT DATA", ref repY, new Color(0.3f, 0.3f, 0.6f));
 
             reportPanel.SetActive(false);

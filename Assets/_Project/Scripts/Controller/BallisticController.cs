@@ -12,6 +12,7 @@ namespace BallisticSim.Core.Controllers
     public class BallisticController : MonoBehaviour
     {
         private const float RESOLUTION_DELAY = 3f;
+        private const float PROJECTILE_LIFETIME = 15f;
 
         [Header("References")]
         [SerializeField] private BallisticView _view;
@@ -23,7 +24,9 @@ namespace BallisticSim.Core.Controllers
         private BallisticParameters _parameters = new BallisticParameters();
         private BallisticResults _results = new BallisticResults();
         private GameObject _activeProjectile;
+        private Rigidbody _activeRb;
         private bool _isFiring;
+        private bool _impactReceived;
 
         public BallisticParameters Parameters => _parameters;
         public BallisticResults Results => _results;
@@ -56,19 +59,15 @@ namespace BallisticSim.Core.Controllers
         {
             _view.HideReport();
             _view.ClearTelemetry();
+            _view.SetCleanSceneButtonVisible(false);
             _weapon.SetAngle(_parameters.angle);
             _spawner.SpawnWall(_parameters.targetDistance);
         }
 
         private void Update()
         {
-            if (_activeProjectile == null) return;
-
-            var rb = _activeProjectile.GetComponent<Rigidbody>();
-            if (rb != null)
-            {
-                _view.UpdateTelemetry(rb.linearVelocity.magnitude, _activeProjectile.transform.position);
-            }
+            if (_activeRb == null) return;
+            _view.UpdateTelemetry(_activeRb.linearVelocity.magnitude, _activeRb.transform.position);
         }
 
         private void HandleAngleChanged(float value)
@@ -84,13 +83,14 @@ namespace BallisticSim.Core.Controllers
         private void HandleDistanceChanged(float value)
         {
             _parameters.targetDistance = value;
-            _spawner.SpawnWall(value);
+            if (!_isFiring) _spawner.SpawnWall(value);
         }
 
         private void HandleFire()
         {
             if (_isFiring) return;
             _isFiring = true;
+            _impactReceived = false;
 
             _results.Reset();
             _view.HideReport();
@@ -102,11 +102,13 @@ namespace BallisticSim.Core.Controllers
             if (setup == null)
             {
                 Debug.LogError($"[{nameof(BallisticController)}] Projectile prefab missing ProjectileSetup.");
+                HandleCleanScene();
                 return;
             }
 
             setup.Configure(_parameters.mass, _parameters.bulletSize);
-            setup.Rb.AddForce(spawn.up * _parameters.force, ForceMode.Impulse);
+            _activeRb = setup.Rb;
+            _activeRb.AddForce(spawn.up * _parameters.force, ForceMode.Impulse);
 
             var tracking = _activeProjectile.GetComponent<ProjectileTracking>();
             if (tracking != null)
@@ -115,11 +117,26 @@ namespace BallisticSim.Core.Controllers
             }
 
             _view.SetFireButtonInteractable(false);
+            _view.SetCleanSceneButtonVisible(true);
             _cameraController.FollowProjectile(_activeProjectile.transform);
+
+            StartCoroutine(ProjectileLifetimeTimeout());
+        }
+
+        private IEnumerator ProjectileLifetimeTimeout()
+        {
+            yield return new WaitForSeconds(PROJECTILE_LIFETIME);
+            if (!_impactReceived)
+            {
+                HandleCleanScene();
+            }
         }
 
         private void HandleImpact(Vector3 impactPoint, float flightTime, float relativeVelocity, float impulse)
         {
+            if (_impactReceived) return;
+            _impactReceived = true;
+
             var tracking = _activeProjectile.GetComponent<ProjectileTracking>();
             _results.distance = tracking.GetDistance();
             _results.flightTime = flightTime;
@@ -157,13 +174,16 @@ namespace BallisticSim.Core.Controllers
                 Destroy(_activeProjectile);
                 _activeProjectile = null;
             }
+            _activeRb = null;
 
             _isFiring = false;
+            _impactReceived = false;
             _results.Reset();
             _spawner.SpawnWall(_parameters.targetDistance);
             _view.HideReport();
             _view.ClearTelemetry();
             _view.SetFireButtonInteractable(true);
+            _view.SetCleanSceneButtonVisible(false);
             _cameraController.SetOverviewActive();
         }
 

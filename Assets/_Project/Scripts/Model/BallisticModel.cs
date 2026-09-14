@@ -8,7 +8,7 @@ namespace BallisticSim.Core.Model
     {
         [Range(0f, 90f)]
         public float angle = 45f;
-        public float force = 500f;
+        public float force = 20f;
         public float mass = 1f;
         public float bulletSize = 0.2f;
         public float targetDistance = 30f;

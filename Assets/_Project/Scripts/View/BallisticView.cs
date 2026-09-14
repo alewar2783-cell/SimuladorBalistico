@@ -147,5 +147,13 @@ namespace BallisticSim.Core.View
         {
             _fireButton.interactable = interactable;
         }
+
+        public void SetCleanSceneButtonVisible(bool isVisible)
+        {
+            if (_cleanSceneButton != null)
+            {
+                _cleanSceneButton.gameObject.SetActive(isVisible);
+            }
+        }
     }
 }
