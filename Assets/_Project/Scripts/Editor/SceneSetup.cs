@@ -130,6 +130,14 @@ namespace BallisticSim.Editor
             GameObject weapon = new GameObject("Weapon");
             weapon.transform.position = Vector3.zero;
 
+            GameObject weaponBase = GameObject.CreatePrimitive(PrimitiveType.Box);
+            weaponBase.name = "WeaponBase";
+            weaponBase.transform.SetParent(weapon.transform);
+            weaponBase.transform.localPosition = new Vector3(0f, -0.2f, 0f);
+            weaponBase.transform.localScale = new Vector3(0.5f, 0.4f, 0.5f);
+            weaponBase.GetComponent<Renderer>().sharedMaterial = mat;
+            Object.DestroyImmediate(weaponBase.GetComponent<Collider>());
+
             GameObject barrel = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
             barrel.name = "Barrel";
             barrel.transform.SetParent(weapon.transform);
@@ -215,6 +223,11 @@ namespace BallisticSim.Editor
 
             TMP_Text bounceLabel = CreateLabel(weaponPanel.transform, "BulletBounceLabel", "Bounciness: 0.30", ref yOffset);
             Slider bounceSlider = CreateSlider(weaponPanel.transform, "BulletBounceSlider", ref yOffset, 0f, 1f, 0.3f);
+
+            GameObject spacer = new GameObject("Spacer");
+            spacer.transform.SetParent(weaponPanel.transform, false);
+            LayoutElement spacerLe = spacer.AddComponent<LayoutElement>();
+            spacerLe.minHeight = 15f;
 
             Button fireButton = CreateButton(weaponPanel.transform, "FireButton", "FIRE", ref yOffset, new Color(0.8f, 0.2f, 0.2f));
             Button cleanButton = CreateButton(weaponPanel.transform, "CleanSceneButton", "CLEAN SCENE", ref yOffset, new Color(0.3f, 0.5f, 0.3f));
@@ -416,8 +429,8 @@ namespace BallisticSim.Editor
             img.color = bgColor;
 
             VerticalLayoutGroup layout = panel.AddComponent<VerticalLayoutGroup>();
-            layout.padding = new RectOffset(10, 10, 10, 10);
-            layout.spacing = 4f;
+            layout.padding = new RectOffset(15, 15, 15, 15);
+            layout.spacing = 8f;
             layout.childForceExpandWidth = true;
             layout.childForceExpandHeight = false;
             layout.childControlWidth = true;

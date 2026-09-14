@@ -30,9 +30,9 @@ namespace BallisticSim.Core.Projectile
             var col = GetComponent<Collider>();
             if (col != null)
             {
-                PhysicMaterial mat = new PhysicMaterial("BulletPhysics");
+                PhysicsMaterial mat = new PhysicsMaterial("BulletPhysics");
                 mat.bounciness = bounciness;
-                mat.bounceCombine = PhysicMaterialCombine.Maximum;
+                mat.bounceCombine = PhysicsMaterialCombine.Maximum;
                 col.sharedMaterial = mat;
             }
         }
