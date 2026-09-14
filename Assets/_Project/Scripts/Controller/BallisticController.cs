@@ -2,6 +2,7 @@ using UnityEngine;
 using BallisticSim.Core.Model;
 using BallisticSim.Core.View;
 using BallisticSim.Core.Projectile;
+using BallisticSim.Core.Spawner;
 
 namespace BallisticSim.Core.Controllers
 {
@@ -10,6 +11,7 @@ namespace BallisticSim.Core.Controllers
         [Header("References")]
         [SerializeField] private BallisticView _view;
         [SerializeField] private WeaponController _weapon;
+        [SerializeField] private TargetSpawner _spawner;
         [SerializeField] private GameObject _projectilePrefab;
 
         private BallisticParameters _parameters = new BallisticParameters();
@@ -44,6 +46,7 @@ namespace BallisticSim.Core.Controllers
             _view.HideReport();
             _view.ClearTelemetry();
             _weapon.SetAngle(_parameters.angle);
+            _spawner.SpawnWall(_parameters.targetDistance);
         }
 
         private void Update()
@@ -67,7 +70,11 @@ namespace BallisticSim.Core.Controllers
         private void HandleForceChanged(float value) => _parameters.force = value;
         private void HandleMassChanged(float value) => _parameters.mass = value;
         private void HandleBulletSizeChanged(float value) => _parameters.bulletSize = value;
-        private void HandleDistanceChanged(float value) => _parameters.targetDistance = value;
+        private void HandleDistanceChanged(float value)
+        {
+            _parameters.targetDistance = value;
+            _spawner.SpawnWall(value);
+        }
 
         private void HandleFire()
         {
