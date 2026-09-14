@@ -17,14 +17,18 @@ namespace BallisticSim.Core.Spawner
         private Rigidbody[,] _grid;
 
         private float _currentBoxMass = 2f;
+        private float _currentBoxSize = 1f;
 
         public int TotalJoints { get; private set; }
 
-        public void SetWallParameters(float boxMass, float jointBreakForce)
+        public void SetWallParameters(float boxMass, float jointBreakForce, int cols, int rows, float boxSize)
         {
             _currentBoxMass = boxMass;
             _jointBreakForce = jointBreakForce;
             _jointBreakTorque = jointBreakForce;
+            _columns = cols;
+            _rows = rows;
+            _currentBoxSize = boxSize;
         }
 
         public void SpawnWall(float distanceFromWeapon)
@@ -35,7 +39,7 @@ namespace BallisticSim.Core.Spawner
             _grid = new Rigidbody[_columns, _rows];
             TotalJoints = 0;
 
-            Vector3 boxScale = _boxPrefab.transform.localScale;
+            Vector3 boxScale = Vector3.one * _currentBoxSize;
             // Bottom-left corner offset centers the wall on X, sits on Y=0
             float startX = -(_columns - 1) * boxScale.x * 0.5f;
             float startY = boxScale.y * 0.5f;
@@ -51,6 +55,7 @@ namespace BallisticSim.Core.Spawner
                     );
 
                     GameObject box = Instantiate(_boxPrefab, position, Quaternion.identity, _wallParent.transform);
+                    box.transform.localScale = boxScale;
                     box.name = $"Box_{x}_{y}";
 
                     Rigidbody rb = box.GetComponent<Rigidbody>();

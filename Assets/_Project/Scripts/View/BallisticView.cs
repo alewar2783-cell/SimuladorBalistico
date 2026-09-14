@@ -7,32 +7,36 @@ namespace BallisticSim.Core.View
 {
     public class BallisticView : MonoBehaviour
     {
-        [Header("HUD — Input Sliders")]
+        [Header("Weapon Sliders")]
         [SerializeField] private Slider _angleSlider;
         [SerializeField] private Slider _forceSlider;
         [SerializeField] private Slider _massSlider;
         [SerializeField] private Slider _bulletSizeSlider;
-        [SerializeField] private Slider _distanceSlider;
-        [SerializeField] private Slider _boxMassSlider;
-        [SerializeField] private Slider _jointBreakForceSlider;
-
-        [Header("HUD — Slider Labels")]
+        [SerializeField] private Slider _bulletBouncinessSlider;
         [SerializeField] private TMP_Text _angleLabelText;
         [SerializeField] private TMP_Text _forceLabelText;
         [SerializeField] private TMP_Text _massLabelText;
         [SerializeField] private TMP_Text _bulletSizeLabelText;
+        [SerializeField] private TMP_Text _bulletBouncinessLabelText;
+
+        [Header("Target Sliders")]
+        [SerializeField] private Slider _distanceSlider;
+        [SerializeField] private Slider _wallColsSlider;
+        [SerializeField] private Slider _wallRowsSlider;
+        [SerializeField] private Slider _boxSizeSlider;
+        [SerializeField] private Slider _boxMassSlider;
+        [SerializeField] private Slider _jointBreakForceSlider;
         [SerializeField] private TMP_Text _distanceLabelText;
+        [SerializeField] private TMP_Text _wallColsLabelText;
+        [SerializeField] private TMP_Text _wallRowsLabelText;
+        [SerializeField] private TMP_Text _boxSizeLabelText;
         [SerializeField] private TMP_Text _boxMassLabelText;
         [SerializeField] private TMP_Text _jointBreakForceLabelText;
 
-        [Header("HUD — Fire Button")]
+        [Header("Buttons & Panels")]
         [SerializeField] private Button _fireButton;
-
-        [Header("Telemetry")]
         [SerializeField] private TMP_Text _velocityText;
         [SerializeField] private TMP_Text _positionText;
-
-        [Header("Shot Report Panel")]
         [SerializeField] private GameObject _reportPanel;
         [SerializeField] private TMP_Text _reportDistanceText;
         [SerializeField] private TMP_Text _reportFlightTimeText;
@@ -48,7 +52,11 @@ namespace BallisticSim.Core.View
         public event Action<float> OnForceChanged;
         public event Action<float> OnMassChanged;
         public event Action<float> OnBulletSizeChanged;
+        public event Action<float> OnBulletBouncinessChanged;
         public event Action<float> OnDistanceChanged;
+        public event Action<int> OnWallColsChanged;
+        public event Action<int> OnWallRowsChanged;
+        public event Action<float> OnBoxSizeChanged;
         public event Action<float> OnBoxMassChanged;
         public event Action<float> OnJointBreakForceChanged;
         public event Action OnFirePressed;
@@ -57,77 +65,23 @@ namespace BallisticSim.Core.View
 
         private void OnEnable()
         {
-            _angleSlider.onValueChanged.AddListener(HandleAngleChanged);
-            _forceSlider.onValueChanged.AddListener(HandleForceChanged);
-            _massSlider.onValueChanged.AddListener(HandleMassChanged);
-            _bulletSizeSlider.onValueChanged.AddListener(HandleBulletSizeChanged);
-            _distanceSlider.onValueChanged.AddListener(HandleDistanceChanged);
-            _boxMassSlider.onValueChanged.AddListener(HandleBoxMassChanged);
-            _jointBreakForceSlider.onValueChanged.AddListener(HandleJointBreakForceChanged);
-            _fireButton.onClick.AddListener(HandleFirePressed);
-            _cleanSceneButton.onClick.AddListener(HandleCleanScenePressed);
-            _exportDataButton.onClick.AddListener(HandleExportDataPressed);
-        }
+            _angleSlider.onValueChanged.AddListener(v => { _angleLabelText.text = $"Angle: {v:F1}°"; OnAngleChanged?.Invoke(v); });
+            _forceSlider.onValueChanged.AddListener(v => { _forceLabelText.text = $"Force: {v:F0}N"; OnForceChanged?.Invoke(v); });
+            _massSlider.onValueChanged.AddListener(v => { _massLabelText.text = $"Mass: {v:F2}kg"; OnMassChanged?.Invoke(v); });
+            _bulletSizeSlider.onValueChanged.AddListener(v => { _bulletSizeLabelText.text = $"Size: {v:F2}m"; OnBulletSizeChanged?.Invoke(v); });
+            _bulletBouncinessSlider.onValueChanged.AddListener(v => { _bulletBouncinessLabelText.text = $"Bounce: {v:F2}"; OnBulletBouncinessChanged?.Invoke(v); });
+            
+            _distanceSlider.onValueChanged.AddListener(v => { _distanceLabelText.text = $"Distance: {v:F0}m"; OnDistanceChanged?.Invoke(v); });
+            _wallColsSlider.onValueChanged.AddListener(v => { _wallColsLabelText.text = $"Columns: {v:F0}"; OnWallColsChanged?.Invoke(Mathf.RoundToInt(v)); });
+            _wallRowsSlider.onValueChanged.AddListener(v => { _wallRowsLabelText.text = $"Rows: {v:F0}"; OnWallRowsChanged?.Invoke(Mathf.RoundToInt(v)); });
+            _boxSizeSlider.onValueChanged.AddListener(v => { _boxSizeLabelText.text = $"Box Size: {v:F2}m"; OnBoxSizeChanged?.Invoke(v); });
+            _boxMassSlider.onValueChanged.AddListener(v => { _boxMassLabelText.text = $"Box Mass: {v:F1}kg"; OnBoxMassChanged?.Invoke(v); });
+            _jointBreakForceSlider.onValueChanged.AddListener(v => { _jointBreakForceLabelText.text = $"Joint Force: {v:F0}N"; OnJointBreakForceChanged?.Invoke(v); });
 
-        private void OnDisable()
-        {
-            _angleSlider.onValueChanged.RemoveListener(HandleAngleChanged);
-            _forceSlider.onValueChanged.RemoveListener(HandleForceChanged);
-            _massSlider.onValueChanged.RemoveListener(HandleMassChanged);
-            _bulletSizeSlider.onValueChanged.RemoveListener(HandleBulletSizeChanged);
-            _distanceSlider.onValueChanged.RemoveListener(HandleDistanceChanged);
-            _boxMassSlider.onValueChanged.RemoveListener(HandleBoxMassChanged);
-            _jointBreakForceSlider.onValueChanged.RemoveListener(HandleJointBreakForceChanged);
-            _fireButton.onClick.RemoveListener(HandleFirePressed);
-            _cleanSceneButton.onClick.RemoveListener(HandleCleanScenePressed);
-            _exportDataButton.onClick.RemoveListener(HandleExportDataPressed);
+            _fireButton.onClick.AddListener(() => OnFirePressed?.Invoke());
+            _cleanSceneButton.onClick.AddListener(() => OnCleanScenePressed?.Invoke());
+            _exportDataButton.onClick.AddListener(() => OnExportDataPressed?.Invoke());
         }
-
-        private void HandleAngleChanged(float value)
-        {
-            _angleLabelText.text = $"Angle: {value:F1}°";
-            OnAngleChanged?.Invoke(value);
-        }
-
-        private void HandleForceChanged(float value)
-        {
-            _forceLabelText.text = $"Force: {value:F0}N";
-            OnForceChanged?.Invoke(value);
-        }
-
-        private void HandleMassChanged(float value)
-        {
-            _massLabelText.text = $"Mass: {value:F2}kg";
-            OnMassChanged?.Invoke(value);
-        }
-
-        private void HandleBulletSizeChanged(float value)
-        {
-            _bulletSizeLabelText.text = $"Size: {value:F2}m";
-            OnBulletSizeChanged?.Invoke(value);
-        }
-
-        private void HandleDistanceChanged(float value)
-        {
-            _distanceLabelText.text = $"Distance: {value:F0}m";
-            OnDistanceChanged?.Invoke(value);
-        }
-
-        private void HandleBoxMassChanged(float value)
-        {
-            _boxMassLabelText.text = $"Box Mass: {value:F1}kg";
-            OnBoxMassChanged?.Invoke(value);
-        }
-
-        private void HandleJointBreakForceChanged(float value)
-        {
-            _jointBreakForceLabelText.text = $"Joint Force: {value:F0}N";
-            OnJointBreakForceChanged?.Invoke(value);
-        }
-
-        private void HandleFirePressed() => OnFirePressed?.Invoke();
-        private void HandleCleanScenePressed() => OnCleanScenePressed?.Invoke();
-        private void HandleExportDataPressed() => OnExportDataPressed?.Invoke();
 
         public void UpdateTelemetry(float velocityMagnitude, Vector3 position)
         {
@@ -141,14 +95,7 @@ namespace BallisticSim.Core.View
             _positionText.text = "X:---  Y:---  Z:---";
         }
 
-        public void ShowReport(
-            float distance,
-            float flightTime,
-            Vector3 impactPoint,
-            float relativeVelocity,
-            float collisionImpulse,
-            int brokenJoints,
-            int score)
+        public void ShowReport(float distance, float flightTime, Vector3 impactPoint, float relativeVelocity, float collisionImpulse, int brokenJoints, int score)
         {
             _reportDistanceText.text = $"Distance: {distance:F2}m";
             _reportFlightTimeText.text = $"Flight Time: {flightTime:F2}s";
@@ -160,22 +107,8 @@ namespace BallisticSim.Core.View
             _reportPanel.SetActive(true);
         }
 
-        public void HideReport()
-        {
-            _reportPanel.SetActive(false);
-        }
-
-        public void SetFireButtonInteractable(bool interactable)
-        {
-            _fireButton.interactable = interactable;
-        }
-
-        public void SetCleanSceneButtonVisible(bool isVisible)
-        {
-            if (_cleanSceneButton != null)
-            {
-                _cleanSceneButton.gameObject.SetActive(isVisible);
-            }
-        }
+        public void HideReport() => _reportPanel.SetActive(false);
+        public void SetFireButtonInteractable(bool interactable) => _fireButton.interactable = interactable;
+        public void SetCleanSceneButtonVisible(bool isVisible) { if (_cleanSceneButton != null) _cleanSceneButton.gameObject.SetActive(isVisible); }
     }
 }

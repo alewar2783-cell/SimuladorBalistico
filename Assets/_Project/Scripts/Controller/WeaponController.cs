@@ -10,7 +10,9 @@ namespace BallisticSim.Core.Controllers
 
         public void SetAngle(float angleDegrees)
         {
-            transform.localRotation = Quaternion.Euler(angleDegrees, 0f, 0f);
+            // 0 degrees = horizontal (towards +Z). That means rotating +90 on X so local Y points to +Z.
+            // 90 degrees = vertical (towards +Y). That means 0 rotation on X.
+            transform.localRotation = Quaternion.Euler(90f - angleDegrees, 0f, 0f);
         }
 
         private void OnValidate()

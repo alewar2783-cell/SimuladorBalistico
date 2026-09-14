@@ -15,14 +15,26 @@ namespace BallisticSim.Core.Projectile
             _rb = GetComponent<Rigidbody>();
         }
 
-        public void Configure(float mass, float size)
+        public void Configure(float mass, float size, float bounciness)
         {
-            _rb.mass = mass;
-            _rb.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
-            _rb.useGravity = true;
+            if (Rb != null)
+            {
+                Rb.mass = mass;
+                Rb.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
+                Rb.useGravity = true;
+            }
 
             float diameter = Mathf.Max(size, 0.05f);
             transform.localScale = Vector3.one * diameter;
+
+            var col = GetComponent<Collider>();
+            if (col != null)
+            {
+                PhysicMaterial mat = new PhysicMaterial("BulletPhysics");
+                mat.bounciness = bounciness;
+                mat.bounceCombine = PhysicMaterialCombine.Maximum;
+                col.sharedMaterial = mat;
+            }
         }
     }
 }

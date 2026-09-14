@@ -190,29 +190,72 @@ namespace BallisticSim.Editor
             scaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
             scaler.referenceResolution = new Vector2(1920, 1080);
 
-            GameObject hudPanel = CreatePanel(canvasGo.transform, "HUDPanel",
+            // 1. WEAPON PANEL (Top Left)
+            GameObject weaponPanel = CreatePanel(canvasGo.transform, "WeaponPanel",
                 new Vector2(0f, 1f), new Vector2(0f, 1f),
                 new Vector2(10f, -10f), new Vector2(300f, 0f),
-                new Color(0f, 0f, 0f, 0.5f));
+                new Color(0.1f, 0.1f, 0.15f, 0.8f));
 
             float yOffset = -10f;
-            Slider angleSlider = CreateSlider(hudPanel.transform, "AngleSlider", ref yOffset, 0f, 90f, 45f);
-            TMP_Text angleLabel = CreateLabel(hudPanel.transform, "AngleLabel", "Angle: 45.0°", ref yOffset);
-            Slider forceSlider = CreateSlider(hudPanel.transform, "ForceSlider", ref yOffset, 10f, 100f, 20f);
-            TMP_Text forceLabel = CreateLabel(hudPanel.transform, "ForceLabel", "Force: 20N", ref yOffset);
-            Slider massSlider = CreateSlider(hudPanel.transform, "MassSlider", ref yOffset, 0.1f, 10f, 1f);
-            TMP_Text massLabel = CreateLabel(hudPanel.transform, "MassLabel", "Mass: 1.00kg", ref yOffset);
-            Slider sizeSlider = CreateSlider(hudPanel.transform, "BulletSizeSlider", ref yOffset, 0.05f, 1f, 0.2f);
-            TMP_Text sizeLabel = CreateLabel(hudPanel.transform, "BulletSizeLabel", "Size: 0.20m", ref yOffset);
-            Slider distanceSlider = CreateSlider(hudPanel.transform, "DistanceSlider", ref yOffset, 10f, 100f, 30f);
-            TMP_Text distanceLabel = CreateLabel(hudPanel.transform, "DistanceLabel", "Distance: 30m", ref yOffset);
-            Slider boxMassSlider = CreateSlider(hudPanel.transform, "BoxMassSlider", ref yOffset, 0.1f, 10f, 2f);
-            TMP_Text boxMassLabel = CreateLabel(hudPanel.transform, "BoxMassLabel", "Box Mass: 2.0kg", ref yOffset);
-            Slider jointForceSlider = CreateSlider(hudPanel.transform, "JointForceSlider", ref yOffset, 10f, 2000f, 200f);
-            TMP_Text jointForceLabel = CreateLabel(hudPanel.transform, "JointForceLabel", "Joint Force: 200N", ref yOffset);
+            TMP_Text titleWeapon = CreateLabel(weaponPanel.transform, "TitleWeapon", "WEAPON & PROJECTILE", ref yOffset);
+            titleWeapon.fontSize = 18;
+            titleWeapon.fontStyle = FontStyles.Bold;
 
-            Button fireButton = CreateButton(hudPanel.transform, "FireButton", "FIRE", ref yOffset, new Color(0.8f, 0.2f, 0.2f));
+            TMP_Text angleLabel = CreateLabel(weaponPanel.transform, "AngleLabel", "Angle: 45.0°", ref yOffset);
+            Slider angleSlider = CreateSlider(weaponPanel.transform, "AngleSlider", ref yOffset, 0f, 90f, 45f);
 
+            TMP_Text forceLabel = CreateLabel(weaponPanel.transform, "ForceLabel", "Initial Force: 20N", ref yOffset);
+            Slider forceSlider = CreateSlider(weaponPanel.transform, "ForceSlider", ref yOffset, 10f, 200f, 20f);
+
+            TMP_Text massLabel = CreateLabel(weaponPanel.transform, "MassLabel", "Mass: 1.00kg", ref yOffset);
+            Slider massSlider = CreateSlider(weaponPanel.transform, "MassSlider", ref yOffset, 0.1f, 10f, 1f);
+
+            TMP_Text sizeLabel = CreateLabel(weaponPanel.transform, "BulletSizeLabel", "Size: 0.20m", ref yOffset);
+            Slider sizeSlider = CreateSlider(weaponPanel.transform, "BulletSizeSlider", ref yOffset, 0.05f, 1f, 0.2f);
+
+            TMP_Text bounceLabel = CreateLabel(weaponPanel.transform, "BulletBounceLabel", "Bounciness: 0.30", ref yOffset);
+            Slider bounceSlider = CreateSlider(weaponPanel.transform, "BulletBounceSlider", ref yOffset, 0f, 1f, 0.3f);
+
+            Button fireButton = CreateButton(weaponPanel.transform, "FireButton", "FIRE", ref yOffset, new Color(0.8f, 0.2f, 0.2f));
+            Button cleanButton = CreateButton(weaponPanel.transform, "CleanSceneButton", "CLEAN SCENE", ref yOffset, new Color(0.3f, 0.5f, 0.3f));
+            cleanButton.gameObject.SetActive(false);
+
+
+            // 2. TARGET PANEL (Bottom Left)
+            GameObject targetPanel = CreatePanel(canvasGo.transform, "TargetPanel",
+                new Vector2(0f, 0f), new Vector2(0f, 0f),
+                new Vector2(10f, 10f), new Vector2(300f, 0f),
+                new Color(0.15f, 0.1f, 0.1f, 0.8f));
+
+            // Change pivot to bottom-left for bottom panel
+            RectTransform tgtRt = targetPanel.GetComponent<RectTransform>();
+            tgtRt.pivot = new Vector2(0f, 0f);
+
+            float tyOffset = 10f;
+            TMP_Text titleTarget = CreateLabel(targetPanel.transform, "TitleTarget", "TARGET CONFIG", ref tyOffset);
+            titleTarget.fontSize = 18;
+            titleTarget.fontStyle = FontStyles.Bold;
+
+            TMP_Text distanceLabel = CreateLabel(targetPanel.transform, "DistanceLabel", "Distance: 30m", ref tyOffset);
+            Slider distanceSlider = CreateSlider(targetPanel.transform, "DistanceSlider", ref tyOffset, 10f, 100f, 30f);
+
+            TMP_Text colsLabel = CreateLabel(targetPanel.transform, "WallColsLabel", "Columns: 5", ref tyOffset);
+            Slider colsSlider = CreateSlider(targetPanel.transform, "WallColsSlider", ref tyOffset, 1f, 10f, 5f);
+
+            TMP_Text rowsLabel = CreateLabel(targetPanel.transform, "WallRowsLabel", "Rows: 5", ref tyOffset);
+            Slider rowsSlider = CreateSlider(targetPanel.transform, "WallRowsSlider", ref tyOffset, 1f, 10f, 5f);
+
+            TMP_Text boxSizeLabel = CreateLabel(targetPanel.transform, "BoxSizeLabel", "Box Size: 1.00m", ref tyOffset);
+            Slider boxSizeSlider = CreateSlider(targetPanel.transform, "BoxSizeSlider", ref tyOffset, 0.1f, 2f, 1f);
+
+            TMP_Text boxMassLabel = CreateLabel(targetPanel.transform, "BoxMassLabel", "Box Mass: 2.0kg", ref tyOffset);
+            Slider boxMassSlider = CreateSlider(targetPanel.transform, "BoxMassSlider", ref tyOffset, 0.1f, 10f, 2f);
+
+            TMP_Text jointForceLabel = CreateLabel(targetPanel.transform, "JointForceLabel", "Joint Force: 200N", ref tyOffset);
+            Slider jointForceSlider = CreateSlider(targetPanel.transform, "JointForceSlider", ref tyOffset, 10f, 2000f, 200f);
+
+
+            // 3. TELEMETRY PANEL (Top Right)
             GameObject telemetryPanel = CreatePanel(canvasGo.transform, "TelemetryPanel",
                 new Vector2(1f, 1f), new Vector2(1f, 1f),
                 new Vector2(-10f, -10f), new Vector2(300f, 0f),
@@ -222,6 +265,7 @@ namespace BallisticSim.Editor
             TMP_Text velocityText = CreateLabel(telemetryPanel.transform, "VelocityText", "Speed: ---", ref telY);
             TMP_Text positionText = CreateLabel(telemetryPanel.transform, "PositionText", "X:---  Y:---  Z:---", ref telY);
 
+            // 4. REPORT PANEL (Center)
             GameObject reportPanel = CreatePanel(canvasGo.transform, "ReportPanel",
                 new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f),
                 Vector2.zero, new Vector2(400f, 0f),
@@ -239,29 +283,37 @@ namespace BallisticSim.Editor
             TMP_Text repBroken = CreateLabel(reportPanel.transform, "ReportBrokenJoints", "Broken Joints: ---", ref repY);
             TMP_Text repScore = CreateLabel(reportPanel.transform, "ReportScore", "Score: ---", ref repY);
             repScore.fontSize = 22;
-            Button cleanButton = CreateButton(hudPanel.transform, "CleanSceneButton", "CLEAN SCENE", ref yOffset, new Color(0.3f, 0.5f, 0.3f));
-            cleanButton.gameObject.SetActive(false);
 
             Button exportButton = CreateButton(reportPanel.transform, "ExportDataButton", "EXPORT DATA", ref repY, new Color(0.3f, 0.3f, 0.6f));
-
             reportPanel.SetActive(false);
 
+            // WIRING
             BallisticView view = canvasGo.AddComponent<BallisticView>();
             SerializedObject so = new SerializedObject(view);
             so.FindProperty("_angleSlider").objectReferenceValue = angleSlider;
             so.FindProperty("_forceSlider").objectReferenceValue = forceSlider;
             so.FindProperty("_massSlider").objectReferenceValue = massSlider;
             so.FindProperty("_bulletSizeSlider").objectReferenceValue = sizeSlider;
+            so.FindProperty("_bulletBouncinessSlider").objectReferenceValue = bounceSlider;
             so.FindProperty("_distanceSlider").objectReferenceValue = distanceSlider;
+            so.FindProperty("_wallColsSlider").objectReferenceValue = colsSlider;
+            so.FindProperty("_wallRowsSlider").objectReferenceValue = rowsSlider;
+            so.FindProperty("_boxSizeSlider").objectReferenceValue = boxSizeSlider;
             so.FindProperty("_boxMassSlider").objectReferenceValue = boxMassSlider;
             so.FindProperty("_jointBreakForceSlider").objectReferenceValue = jointForceSlider;
+            
             so.FindProperty("_angleLabelText").objectReferenceValue = angleLabel;
             so.FindProperty("_forceLabelText").objectReferenceValue = forceLabel;
             so.FindProperty("_massLabelText").objectReferenceValue = massLabel;
             so.FindProperty("_bulletSizeLabelText").objectReferenceValue = sizeLabel;
+            so.FindProperty("_bulletBouncinessLabelText").objectReferenceValue = bounceLabel;
             so.FindProperty("_distanceLabelText").objectReferenceValue = distanceLabel;
+            so.FindProperty("_wallColsLabelText").objectReferenceValue = colsLabel;
+            so.FindProperty("_wallRowsLabelText").objectReferenceValue = rowsLabel;
+            so.FindProperty("_boxSizeLabelText").objectReferenceValue = boxSizeLabel;
             so.FindProperty("_boxMassLabelText").objectReferenceValue = boxMassLabel;
             so.FindProperty("_jointBreakForceLabelText").objectReferenceValue = jointForceLabel;
+            
             so.FindProperty("_fireButton").objectReferenceValue = fireButton;
             so.FindProperty("_velocityText").objectReferenceValue = velocityText;
             so.FindProperty("_positionText").objectReferenceValue = positionText;

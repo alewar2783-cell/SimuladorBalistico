@@ -34,12 +34,16 @@ namespace BallisticSim.Core.Controllers
         private void OnEnable()
         {
             _view.OnAngleChanged += HandleAngleChanged;
-            _view.OnForceChanged += HandleForceChanged;
-            _view.OnMassChanged += HandleMassChanged;
-            _view.OnBulletSizeChanged += HandleBulletSizeChanged;
-            _view.OnDistanceChanged += HandleDistanceChanged;
-            _view.OnBoxMassChanged += HandleBoxMassChanged;
-            _view.OnJointBreakForceChanged += HandleJointBreakForceChanged;
+            _view.OnForceChanged += v => _parameters.force = v;
+            _view.OnMassChanged += v => _parameters.mass = v;
+            _view.OnBulletSizeChanged += v => _parameters.bulletSize = v;
+            _view.OnBulletBouncinessChanged += v => _parameters.bulletBounciness = v;
+            _view.OnDistanceChanged += v => HandleWallChange(() => _parameters.targetDistance = v);
+            _view.OnWallColsChanged += v => HandleWallChange(() => _parameters.wallColumns = v);
+            _view.OnWallRowsChanged += v => HandleWallChange(() => _parameters.wallRows = v);
+            _view.OnBoxSizeChanged += v => HandleWallChange(() => _parameters.boxSize = v);
+            _view.OnBoxMassChanged += v => HandleWallChange(() => _parameters.boxMass = v);
+            _view.OnJointBreakForceChanged += v => HandleWallChange(() => _parameters.jointBreakForce = v);
             _view.OnFirePressed += HandleFire;
             _view.OnCleanScenePressed += HandleCleanScene;
             _view.OnExportDataPressed += HandleExportData;
@@ -48,12 +52,6 @@ namespace BallisticSim.Core.Controllers
         private void OnDisable()
         {
             _view.OnAngleChanged -= HandleAngleChanged;
-            _view.OnForceChanged -= HandleForceChanged;
-            _view.OnMassChanged -= HandleMassChanged;
-            _view.OnBulletSizeChanged -= HandleBulletSizeChanged;
-            _view.OnDistanceChanged -= HandleDistanceChanged;
-            _view.OnBoxMassChanged -= HandleBoxMassChanged;
-            _view.OnJointBreakForceChanged -= HandleJointBreakForceChanged;
             _view.OnFirePressed -= HandleFire;
             _view.OnCleanScenePressed -= HandleCleanScene;
             _view.OnExportDataPressed -= HandleExportData;
@@ -66,7 +64,7 @@ namespace BallisticSim.Core.Controllers
             _view.SetCleanSceneButtonVisible(false);
             _weapon.SetAngle(_parameters.angle);
             
-            _spawner.SetWallParameters(_parameters.boxMass, _parameters.jointBreakForce);
+            UpdateSpawnerParams();
             _spawner.SpawnWall(_parameters.targetDistance);
         }
 
@@ -82,27 +80,15 @@ namespace BallisticSim.Core.Controllers
             _weapon.SetAngle(value);
         }
 
-        private void HandleForceChanged(float value) => _parameters.force = value;
-        private void HandleMassChanged(float value) => _parameters.mass = value;
-        private void HandleBulletSizeChanged(float value) => _parameters.bulletSize = value;
-
-        private void HandleDistanceChanged(float value)
+        private void UpdateSpawnerParams()
         {
-            _parameters.targetDistance = value;
-            if (!_isFiring) _spawner.SpawnWall(value);
+            _spawner.SetWallParameters(_parameters.boxMass, _parameters.jointBreakForce, _parameters.wallColumns, _parameters.wallRows, _parameters.boxSize);
         }
 
-        private void HandleBoxMassChanged(float value)
+        private void HandleWallChange(System.Action updateAction)
         {
-            _parameters.boxMass = value;
-            _spawner.SetWallParameters(_parameters.boxMass, _parameters.jointBreakForce);
-            if (!_isFiring) _spawner.SpawnWall(_parameters.targetDistance);
-        }
-
-        private void HandleJointBreakForceChanged(float value)
-        {
-            _parameters.jointBreakForce = value;
-            _spawner.SetWallParameters(_parameters.boxMass, _parameters.jointBreakForce);
+            updateAction();
+            UpdateSpawnerParams();
             if (!_isFiring) _spawner.SpawnWall(_parameters.targetDistance);
         }
 
@@ -126,7 +112,7 @@ namespace BallisticSim.Core.Controllers
                 return;
             }
 
-            setup.Configure(_parameters.mass, _parameters.bulletSize);
+            setup.Configure(_parameters.mass, _parameters.bulletSize, _parameters.bulletBounciness);
             _activeRb = setup.Rb;
             _activeRb.AddForce(spawn.up * _parameters.force, ForceMode.Impulse);
 
