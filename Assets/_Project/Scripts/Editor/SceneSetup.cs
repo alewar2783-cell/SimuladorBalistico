@@ -206,6 +206,10 @@ namespace BallisticSim.Editor
             TMP_Text sizeLabel = CreateLabel(hudPanel.transform, "BulletSizeLabel", "Size: 0.20m", ref yOffset);
             Slider distanceSlider = CreateSlider(hudPanel.transform, "DistanceSlider", ref yOffset, 10f, 100f, 30f);
             TMP_Text distanceLabel = CreateLabel(hudPanel.transform, "DistanceLabel", "Distance: 30m", ref yOffset);
+            Slider boxMassSlider = CreateSlider(hudPanel.transform, "BoxMassSlider", ref yOffset, 0.1f, 10f, 2f);
+            TMP_Text boxMassLabel = CreateLabel(hudPanel.transform, "BoxMassLabel", "Box Mass: 2.0kg", ref yOffset);
+            Slider jointForceSlider = CreateSlider(hudPanel.transform, "JointForceSlider", ref yOffset, 10f, 2000f, 200f);
+            TMP_Text jointForceLabel = CreateLabel(hudPanel.transform, "JointForceLabel", "Joint Force: 200N", ref yOffset);
 
             Button fireButton = CreateButton(hudPanel.transform, "FireButton", "FIRE", ref yOffset, new Color(0.8f, 0.2f, 0.2f));
 
@@ -249,11 +253,15 @@ namespace BallisticSim.Editor
             so.FindProperty("_massSlider").objectReferenceValue = massSlider;
             so.FindProperty("_bulletSizeSlider").objectReferenceValue = sizeSlider;
             so.FindProperty("_distanceSlider").objectReferenceValue = distanceSlider;
+            so.FindProperty("_boxMassSlider").objectReferenceValue = boxMassSlider;
+            so.FindProperty("_jointBreakForceSlider").objectReferenceValue = jointForceSlider;
             so.FindProperty("_angleLabelText").objectReferenceValue = angleLabel;
             so.FindProperty("_forceLabelText").objectReferenceValue = forceLabel;
             so.FindProperty("_massLabelText").objectReferenceValue = massLabel;
             so.FindProperty("_bulletSizeLabelText").objectReferenceValue = sizeLabel;
             so.FindProperty("_distanceLabelText").objectReferenceValue = distanceLabel;
+            so.FindProperty("_boxMassLabelText").objectReferenceValue = boxMassLabel;
+            so.FindProperty("_jointBreakForceLabelText").objectReferenceValue = jointForceLabel;
             so.FindProperty("_fireButton").objectReferenceValue = fireButton;
             so.FindProperty("_velocityText").objectReferenceValue = velocityText;
             so.FindProperty("_positionText").objectReferenceValue = positionText;

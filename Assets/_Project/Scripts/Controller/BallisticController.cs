@@ -38,6 +38,8 @@ namespace BallisticSim.Core.Controllers
             _view.OnMassChanged += HandleMassChanged;
             _view.OnBulletSizeChanged += HandleBulletSizeChanged;
             _view.OnDistanceChanged += HandleDistanceChanged;
+            _view.OnBoxMassChanged += HandleBoxMassChanged;
+            _view.OnJointBreakForceChanged += HandleJointBreakForceChanged;
             _view.OnFirePressed += HandleFire;
             _view.OnCleanScenePressed += HandleCleanScene;
             _view.OnExportDataPressed += HandleExportData;
@@ -50,6 +52,8 @@ namespace BallisticSim.Core.Controllers
             _view.OnMassChanged -= HandleMassChanged;
             _view.OnBulletSizeChanged -= HandleBulletSizeChanged;
             _view.OnDistanceChanged -= HandleDistanceChanged;
+            _view.OnBoxMassChanged -= HandleBoxMassChanged;
+            _view.OnJointBreakForceChanged -= HandleJointBreakForceChanged;
             _view.OnFirePressed -= HandleFire;
             _view.OnCleanScenePressed -= HandleCleanScene;
             _view.OnExportDataPressed -= HandleExportData;
@@ -61,6 +65,8 @@ namespace BallisticSim.Core.Controllers
             _view.ClearTelemetry();
             _view.SetCleanSceneButtonVisible(false);
             _weapon.SetAngle(_parameters.angle);
+            
+            _spawner.SetWallParameters(_parameters.boxMass, _parameters.jointBreakForce);
             _spawner.SpawnWall(_parameters.targetDistance);
         }
 
@@ -84,6 +90,20 @@ namespace BallisticSim.Core.Controllers
         {
             _parameters.targetDistance = value;
             if (!_isFiring) _spawner.SpawnWall(value);
+        }
+
+        private void HandleBoxMassChanged(float value)
+        {
+            _parameters.boxMass = value;
+            _spawner.SetWallParameters(_parameters.boxMass, _parameters.jointBreakForce);
+            if (!_isFiring) _spawner.SpawnWall(_parameters.targetDistance);
+        }
+
+        private void HandleJointBreakForceChanged(float value)
+        {
+            _parameters.jointBreakForce = value;
+            _spawner.SetWallParameters(_parameters.boxMass, _parameters.jointBreakForce);
+            if (!_isFiring) _spawner.SpawnWall(_parameters.targetDistance);
         }
 
         private void HandleFire()

@@ -12,6 +12,10 @@ namespace BallisticSim.Core.Model
         public float mass = 1f;
         public float bulletSize = 0.2f;
         public float targetDistance = 30f;
+        
+        [Header("Target Parameters")]
+        public float boxMass = 2f;
+        public float jointBreakForce = 200f;
     }
 
     [Serializable]

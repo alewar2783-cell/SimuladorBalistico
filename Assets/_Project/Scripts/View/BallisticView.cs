@@ -13,6 +13,8 @@ namespace BallisticSim.Core.View
         [SerializeField] private Slider _massSlider;
         [SerializeField] private Slider _bulletSizeSlider;
         [SerializeField] private Slider _distanceSlider;
+        [SerializeField] private Slider _boxMassSlider;
+        [SerializeField] private Slider _jointBreakForceSlider;
 
         [Header("HUD — Slider Labels")]
         [SerializeField] private TMP_Text _angleLabelText;
@@ -20,6 +22,8 @@ namespace BallisticSim.Core.View
         [SerializeField] private TMP_Text _massLabelText;
         [SerializeField] private TMP_Text _bulletSizeLabelText;
         [SerializeField] private TMP_Text _distanceLabelText;
+        [SerializeField] private TMP_Text _boxMassLabelText;
+        [SerializeField] private TMP_Text _jointBreakForceLabelText;
 
         [Header("HUD — Fire Button")]
         [SerializeField] private Button _fireButton;
@@ -45,6 +49,8 @@ namespace BallisticSim.Core.View
         public event Action<float> OnMassChanged;
         public event Action<float> OnBulletSizeChanged;
         public event Action<float> OnDistanceChanged;
+        public event Action<float> OnBoxMassChanged;
+        public event Action<float> OnJointBreakForceChanged;
         public event Action OnFirePressed;
         public event Action OnCleanScenePressed;
         public event Action OnExportDataPressed;
@@ -56,6 +62,8 @@ namespace BallisticSim.Core.View
             _massSlider.onValueChanged.AddListener(HandleMassChanged);
             _bulletSizeSlider.onValueChanged.AddListener(HandleBulletSizeChanged);
             _distanceSlider.onValueChanged.AddListener(HandleDistanceChanged);
+            _boxMassSlider.onValueChanged.AddListener(HandleBoxMassChanged);
+            _jointBreakForceSlider.onValueChanged.AddListener(HandleJointBreakForceChanged);
             _fireButton.onClick.AddListener(HandleFirePressed);
             _cleanSceneButton.onClick.AddListener(HandleCleanScenePressed);
             _exportDataButton.onClick.AddListener(HandleExportDataPressed);
@@ -68,6 +76,8 @@ namespace BallisticSim.Core.View
             _massSlider.onValueChanged.RemoveListener(HandleMassChanged);
             _bulletSizeSlider.onValueChanged.RemoveListener(HandleBulletSizeChanged);
             _distanceSlider.onValueChanged.RemoveListener(HandleDistanceChanged);
+            _boxMassSlider.onValueChanged.RemoveListener(HandleBoxMassChanged);
+            _jointBreakForceSlider.onValueChanged.RemoveListener(HandleJointBreakForceChanged);
             _fireButton.onClick.RemoveListener(HandleFirePressed);
             _cleanSceneButton.onClick.RemoveListener(HandleCleanScenePressed);
             _exportDataButton.onClick.RemoveListener(HandleExportDataPressed);
@@ -101,6 +111,18 @@ namespace BallisticSim.Core.View
         {
             _distanceLabelText.text = $"Distance: {value:F0}m";
             OnDistanceChanged?.Invoke(value);
+        }
+
+        private void HandleBoxMassChanged(float value)
+        {
+            _boxMassLabelText.text = $"Box Mass: {value:F1}kg";
+            OnBoxMassChanged?.Invoke(value);
+        }
+
+        private void HandleJointBreakForceChanged(float value)
+        {
+            _jointBreakForceLabelText.text = $"Joint Force: {value:F0}N";
+            OnJointBreakForceChanged?.Invoke(value);
         }
 
         private void HandleFirePressed() => OnFirePressed?.Invoke();

@@ -16,7 +16,16 @@ namespace BallisticSim.Core.Spawner
         private GameObject _wallParent;
         private Rigidbody[,] _grid;
 
+        private float _currentBoxMass = 2f;
+
         public int TotalJoints { get; private set; }
+
+        public void SetWallParameters(float boxMass, float jointBreakForce)
+        {
+            _currentBoxMass = boxMass;
+            _jointBreakForce = jointBreakForce;
+            _jointBreakTorque = jointBreakForce;
+        }
 
         public void SpawnWall(float distanceFromWeapon)
         {
@@ -49,6 +58,8 @@ namespace BallisticSim.Core.Spawner
                     {
                         rb = box.AddComponent<Rigidbody>();
                     }
+                    
+                    rb.mass = _currentBoxMass;
 
                     _grid[x, y] = rb;
 
