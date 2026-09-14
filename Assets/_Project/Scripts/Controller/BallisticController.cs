@@ -1,13 +1,17 @@
+using System.Collections;
 using UnityEngine;
 using BallisticSim.Core.Model;
 using BallisticSim.Core.View;
 using BallisticSim.Core.Projectile;
 using BallisticSim.Core.Spawner;
+using BallisticSim.Core.Data;
 
 namespace BallisticSim.Core.Controllers
 {
     public class BallisticController : MonoBehaviour
     {
+        private const float RESOLUTION_DELAY = 3f;
+
         [Header("References")]
         [SerializeField] private BallisticView _view;
         [SerializeField] private WeaponController _weapon;
@@ -17,6 +21,7 @@ namespace BallisticSim.Core.Controllers
         private BallisticParameters _parameters = new BallisticParameters();
         private BallisticResults _results = new BallisticResults();
         private GameObject _activeProjectile;
+        private bool _isFiring;
 
         public BallisticParameters Parameters => _parameters;
         public BallisticResults Results => _results;
@@ -29,6 +34,8 @@ namespace BallisticSim.Core.Controllers
             _view.OnBulletSizeChanged += HandleBulletSizeChanged;
             _view.OnDistanceChanged += HandleDistanceChanged;
             _view.OnFirePressed += HandleFire;
+            _view.OnCleanScenePressed += HandleCleanScene;
+            _view.OnExportDataPressed += HandleExportData;
         }
 
         private void OnDisable()
@@ -39,6 +46,8 @@ namespace BallisticSim.Core.Controllers
             _view.OnBulletSizeChanged -= HandleBulletSizeChanged;
             _view.OnDistanceChanged -= HandleDistanceChanged;
             _view.OnFirePressed -= HandleFire;
+            _view.OnCleanScenePressed -= HandleCleanScene;
+            _view.OnExportDataPressed -= HandleExportData;
         }
 
         private void Start()
@@ -51,13 +60,12 @@ namespace BallisticSim.Core.Controllers
 
         private void Update()
         {
-            if (_activeProjectile != null)
+            if (_activeProjectile == null) return;
+
+            var rb = _activeProjectile.GetComponent<Rigidbody>();
+            if (rb != null)
             {
-                var rb = _activeProjectile.GetComponent<Rigidbody>();
-                if (rb != null)
-                {
-                    _view.UpdateTelemetry(rb.linearVelocity.magnitude, _activeProjectile.transform.position);
-                }
+                _view.UpdateTelemetry(rb.linearVelocity.magnitude, _activeProjectile.transform.position);
             }
         }
 
@@ -70,6 +78,7 @@ namespace BallisticSim.Core.Controllers
         private void HandleForceChanged(float value) => _parameters.force = value;
         private void HandleMassChanged(float value) => _parameters.mass = value;
         private void HandleBulletSizeChanged(float value) => _parameters.bulletSize = value;
+
         private void HandleDistanceChanged(float value)
         {
             _parameters.targetDistance = value;
@@ -78,7 +87,8 @@ namespace BallisticSim.Core.Controllers
 
         private void HandleFire()
         {
-            if (_activeProjectile != null) return;
+            if (_isFiring) return;
+            _isFiring = true;
 
             _results.Reset();
             _view.HideReport();
@@ -87,24 +97,75 @@ namespace BallisticSim.Core.Controllers
             _activeProjectile = Instantiate(_projectilePrefab, spawn.position, spawn.rotation);
 
             var setup = _activeProjectile.GetComponent<ProjectileSetup>();
-            if (setup != null)
+            if (setup == null)
             {
-                setup.Configure(_parameters.mass, _parameters.bulletSize);
-                setup.Rb.AddForce(spawn.up * _parameters.force, ForceMode.Impulse);
+                Debug.LogError($"[{nameof(BallisticController)}] Projectile prefab missing ProjectileSetup.");
+                return;
+            }
+
+            setup.Configure(_parameters.mass, _parameters.bulletSize);
+            setup.Rb.AddForce(spawn.up * _parameters.force, ForceMode.Impulse);
+
+            var tracking = _activeProjectile.GetComponent<ProjectileTracking>();
+            if (tracking != null)
+            {
+                tracking.OnImpact += HandleImpact;
             }
 
             _view.SetFireButtonInteractable(false);
         }
 
-        public void DestroyProjectile()
+        private void HandleImpact(Vector3 impactPoint, float flightTime, float relativeVelocity, float impulse)
         {
+            var tracking = _activeProjectile.GetComponent<ProjectileTracking>();
+            _results.distance = tracking.GetDistance();
+            _results.flightTime = flightTime;
+            _results.impactPoint = impactPoint;
+            _results.relativeVelocity = relativeVelocity;
+            _results.collisionImpulse = impulse;
+
+            StartCoroutine(ResolutionPhase());
+        }
+
+        private IEnumerator ResolutionPhase()
+        {
+            yield return new WaitForSeconds(RESOLUTION_DELAY);
+
+            _results.brokenJoints = _spawner.CountBrokenJoints();
+            int score = _results.brokenJoints;
+
+            _view.ShowReport(
+                _results.distance,
+                _results.flightTime,
+                _results.impactPoint,
+                _results.relativeVelocity,
+                _results.collisionImpulse,
+                _results.brokenJoints,
+                score
+            );
+        }
+
+        private void HandleCleanScene()
+        {
+            StopAllCoroutines();
+
             if (_activeProjectile != null)
             {
                 Destroy(_activeProjectile);
                 _activeProjectile = null;
             }
-            _view.SetFireButtonInteractable(true);
+
+            _isFiring = false;
+            _results.Reset();
+            _spawner.SpawnWall(_parameters.targetDistance);
+            _view.HideReport();
             _view.ClearTelemetry();
+            _view.SetFireButtonInteractable(true);
+        }
+
+        private void HandleExportData()
+        {
+            DataExporter.ExportToCsv(_parameters, _results);
         }
     }
 }
