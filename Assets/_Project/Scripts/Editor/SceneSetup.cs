@@ -130,7 +130,7 @@ namespace BallisticSim.Editor
             GameObject weapon = new GameObject("Weapon");
             weapon.transform.position = Vector3.zero;
 
-            GameObject weaponBase = GameObject.CreatePrimitive(PrimitiveType.Box);
+            GameObject weaponBase = GameObject.CreatePrimitive(PrimitiveType.Cube);
             weaponBase.name = "WeaponBase";
             weaponBase.transform.SetParent(weapon.transform);
             weaponBase.transform.localPosition = new Vector3(0f, -0.2f, 0f);
