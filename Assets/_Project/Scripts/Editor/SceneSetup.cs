@@ -376,6 +376,10 @@ namespace BallisticSim.Editor
             RectTransform rt = sliderGo.AddComponent<RectTransform>();
             rt.sizeDelta = new Vector2(0f, 20f);
 
+            LayoutElement le = sliderGo.AddComponent<LayoutElement>();
+            le.preferredHeight = 20f;
+            le.minHeight = 20f;
+
             Slider slider = sliderGo.AddComponent<Slider>();
             slider.minValue = min;
             slider.maxValue = max;
@@ -437,6 +441,10 @@ namespace BallisticSim.Editor
             RectTransform rt = labelGo.AddComponent<RectTransform>();
             rt.sizeDelta = new Vector2(0f, 22f);
 
+            LayoutElement le = labelGo.AddComponent<LayoutElement>();
+            le.preferredHeight = 22f;
+            le.minHeight = 22f;
+
             TextMeshProUGUI tmp = labelGo.AddComponent<TextMeshProUGUI>();
             tmp.text = text;
             tmp.fontSize = 14;
@@ -454,6 +462,10 @@ namespace BallisticSim.Editor
 
             RectTransform rt = btnGo.AddComponent<RectTransform>();
             rt.sizeDelta = new Vector2(0f, 36f);
+
+            LayoutElement le = btnGo.AddComponent<LayoutElement>();
+            le.preferredHeight = 36f;
+            le.minHeight = 36f;
 
             Image img = btnGo.AddComponent<Image>();
             img.color = color;
