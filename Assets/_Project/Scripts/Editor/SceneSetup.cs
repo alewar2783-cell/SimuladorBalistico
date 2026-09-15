@@ -432,6 +432,13 @@ namespace BallisticSim.Editor
             overviewGo.transform.rotation = Quaternion.Euler(25f, 45f, 0f);
             overview.Priority = 20;
 
+            GameObject targetCamGo = new GameObject("TargetCamera");
+            targetCamGo.transform.SetParent(rig.transform);
+            CinemachineCamera targetCam = targetCamGo.AddComponent<CinemachineCamera>();
+            targetCamGo.transform.position = new Vector3(-8f, 4f, 22f); 
+            targetCamGo.transform.rotation = Quaternion.Euler(15f, 45f, 0f); 
+            targetCam.Priority = 10;
+
             GameObject trackingGo = new GameObject("TrackingCamera");
             trackingGo.transform.SetParent(rig.transform);
             CinemachineCamera tracking = trackingGo.AddComponent<CinemachineCamera>();
@@ -456,6 +463,7 @@ namespace BallisticSim.Editor
             CameraController cc = rig.AddComponent<CameraController>();
             SerializedObject so = new SerializedObject(cc);
             so.FindProperty("_overviewCamera").objectReferenceValue = overview;
+            so.FindProperty("_targetCamera").objectReferenceValue = targetCam;
             so.FindProperty("_trackingCamera").objectReferenceValue = tracking;
             so.FindProperty("_impactCamera").objectReferenceValue = impact;
             so.ApplyModifiedPropertiesWithoutUndo();

@@ -36,11 +36,11 @@ namespace BallisticSim.Core.Controllers
         {
             if (_view == null) return;
             
-            _view.OnAngleChanged += HandleAngleChanged;
-            _view.OnForceChanged += v => _parameters.force = v;
-            _view.OnMassChanged += v => _parameters.mass = v;
-            _view.OnBulletSizeChanged += v => _parameters.bulletSize = v;
-            _view.OnBulletBouncinessChanged += v => _parameters.bulletBounciness = v;
+            _view.OnAngleChanged += v => { HandleAngleChanged(v); _cameraController.SetOverviewActive(); };
+            _view.OnForceChanged += v => { _parameters.force = v; _cameraController.SetOverviewActive(); };
+            _view.OnMassChanged += v => { _parameters.mass = v; _cameraController.SetOverviewActive(); };
+            _view.OnBulletSizeChanged += v => { _parameters.bulletSize = v; _cameraController.SetOverviewActive(); };
+            _view.OnBulletBouncinessChanged += v => { _parameters.bulletBounciness = v; _cameraController.SetOverviewActive(); };
             _view.OnDistanceChanged += v => HandleWallChange(() => _parameters.targetDistance = v);
             _view.OnWallColsChanged += v => HandleWallChange(() => _parameters.wallColumns = v);
             _view.OnWallRowsChanged += v => HandleWallChange(() => _parameters.wallRows = v);
@@ -104,6 +104,9 @@ namespace BallisticSim.Core.Controllers
             updateAction();
             UpdateSpawnerParams();
             if (!_isFiring) _spawner.SpawnWall(_parameters.targetDistance);
+            
+            Vector3 wallCenter = new Vector3(0f, (_parameters.wallRows * _parameters.boxSize) * 0.5f, _parameters.targetDistance);
+            _cameraController.SetTargetActive(wallCenter);
         }
 
         private void HandleFire()
