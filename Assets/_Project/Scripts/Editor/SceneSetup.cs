@@ -174,13 +174,35 @@ namespace BallisticSim.Editor
             return gm;
         }
 
+        private static void EnsureTagExists(string tag)
+        {
+            Object[] asset = AssetDatabase.LoadAllAssetsAtPath("ProjectSettings/TagManager.asset");
+            if (asset != null && asset.Length > 0)
+            {
+                SerializedObject serializedObject = new SerializedObject(asset[0]);
+                SerializedProperty tagsProperty = serializedObject.FindProperty("tags");
+                for (int i = 0; i < tagsProperty.arraySize; i++)
+                {
+                    SerializedProperty t = tagsProperty.GetArrayElementAtIndex(i);
+                    if (t.stringValue.Equals(tag)) return;
+                }
+                tagsProperty.InsertArrayElementAtIndex(tagsProperty.arraySize);
+                SerializedProperty newTag = tagsProperty.GetArrayElementAtIndex(tagsProperty.arraySize - 1);
+                newTag.stringValue = tag;
+                serializedObject.ApplyModifiedPropertiesWithoutUndo();
+            }
+        }
+
         private static GameObject CreateGround(Material mat)
         {
             GameObject existing = GameObject.Find("Ground");
             if (existing != null) Object.DestroyImmediate(existing);
 
+            EnsureTagExists("Ground");
+
             GameObject ground = GameObject.CreatePrimitive(PrimitiveType.Plane);
             ground.name = "Ground";
+            ground.tag = "Ground";
             ground.transform.position = Vector3.zero;
             ground.transform.localScale = new Vector3(50f, 1f, 50f);
             ground.GetComponent<Renderer>().sharedMaterial = mat;

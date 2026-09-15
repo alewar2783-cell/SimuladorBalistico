@@ -74,6 +74,11 @@ namespace BallisticSim.Core.Controllers
 
         private void Update()
         {
+            if (UnityEngine.InputSystem.Keyboard.current != null && UnityEngine.InputSystem.Keyboard.current.spaceKey.wasPressedThisFrame)
+            {
+                HandleFire();
+            }
+
             if (_activeRb == null) return;
             _view.UpdateTelemetry(_activeRb.linearVelocity.magnitude, _activeRb.transform.position);
         }
