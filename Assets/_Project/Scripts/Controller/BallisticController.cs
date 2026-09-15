@@ -50,20 +50,17 @@ namespace BallisticSim.Core.Controllers
             _view.OnFirePressed += HandleFire;
             _view.OnCleanScenePressed += HandleCleanScene;
             _view.OnExportDataPressed += HandleExportData;
-            _view.OnSaveCloudPressed += SaveSimulation;
-            _view.OnLoadCloudPressed += LoadSimulation;
+            _view.OnShowHistoryPressed += ShowHistory;
         }
 
         private void OnDisable()
         {
             if (_view == null) return;
             
-            _view.OnAngleChanged -= HandleAngleChanged;
             _view.OnFirePressed -= HandleFire;
             _view.OnCleanScenePressed -= HandleCleanScene;
             _view.OnExportDataPressed -= HandleExportData;
-            _view.OnSaveCloudPressed -= SaveSimulation;
-            _view.OnLoadCloudPressed -= LoadSimulation;
+            _view.OnShowHistoryPressed -= ShowHistory;
         }
 
         private void Start()
@@ -194,6 +191,8 @@ namespace BallisticSim.Core.Controllers
                 _results.brokenJoints,
                 score
             );
+
+            SaveSimulationToHistory();
         }
 
         private void HandleCleanScene()
@@ -226,51 +225,49 @@ namespace BallisticSim.Core.Controllers
             DataExporter.ExportToCsv(_parameters, _results);
         }
 
-        public async void SaveSimulation()
+        private async void SaveSimulationToHistory()
         {
-            if (_repository == null)
-            {
-                _view.ShowCloudStatus("Repository is null");
-                return;
-            }
-
+            if (_repository == null) return;
+            _view.ShowCloudStatus("Saving shot to cloud...");
+            
             try
             {
-                _view.ShowCloudStatus("Saving...");
-                var record = new SimulationRecord(_parameters.angle, _parameters.force, _results.distance);
-                await _repository.SaveAsync(record);
-                _view.ShowCloudStatus("Simulation Saved!");
+                bool isHit = _results.brokenJoints > 0;
+                var record = new SimulationRecord(_parameters.angle, _parameters.force, _parameters.mass, _results.distance, isHit, _results.brokenJoints);
+                await _repository.SaveRecordAsync(record);
+                _view.ShowCloudStatus("Saved automatically");
             }
             catch (System.Exception ex)
             {
-                _view.ShowCloudStatus("Save Error!");
+                _view.ShowCloudStatus("Save Error");
                 Debug.LogException(ex);
             }
         }
 
-        public async void LoadSimulation()
+        private async void ShowHistory()
         {
-            if (_repository == null)
-            {
-                _view.ShowCloudStatus("Repository is null");
-                return;
-            }
-
+            if (_repository == null) return;
+            
+            _view.ShowCloudStatus("Fetching History...");
             try
             {
-                _view.ShowCloudStatus("Loading...");
-                SimulationRecord record = await _repository.LoadLastAsync();
+                var history = await _repository.LoadHistoryAsync();
+                _view.ShowCloudStatus("History Loaded");
 
-                if (record == null)
+                if (history.Count == 0)
                 {
-                    _view.ShowCloudStatus("No saved simulation found.");
+                    _view.ShowHistoryPanel("No shots recorded yet.");
                     return;
                 }
 
-                _view.SetAngle(record.angle);
-                _view.SetForce(record.force);
-                // Note: distance is a result, we just loaded it for info. To display it, we would need to push it back to the view if needed.
-                _view.ShowCloudStatus($"Loaded! (Angle: {record.angle}, Force: {record.force})");
+                System.Text.StringBuilder sb = new System.Text.StringBuilder();
+                for (int i = 0; i < history.Count; i++)
+                {
+                    var r = history[i];
+                    string hitTxt = r.hit ? "HIT" : "MISS";
+                    sb.AppendLine($"[Shot {i+1}] {hitTxt} | Angle: {r.angle:F1}° | Force: {r.force:F0}N | Mass: {r.mass:F1}kg | Dist: {r.distance:F1}m | Affected: {r.affectedObjects}");
+                }
+                _view.ShowHistoryPanel(sb.ToString());
             }
             catch (System.Exception ex)
             {

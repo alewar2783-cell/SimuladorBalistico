@@ -47,9 +47,11 @@ namespace BallisticSim.Core.View
         [SerializeField] private TMP_Text _reportScoreText;
         [SerializeField] private Button _cleanSceneButton;
         [SerializeField] private Button _exportDataButton;
-        [SerializeField] private Button _saveCloudButton;
-        [SerializeField] private Button _loadCloudButton;
+        [SerializeField] private Button _showHistoryButton;
         [SerializeField] private TMP_Text _cloudStatusText;
+        [SerializeField] private GameObject _historyPanel;
+        [SerializeField] private TMP_Text _historyContentText;
+        [SerializeField] private Button _closeHistoryButton;
 
         public event Action<float> OnAngleChanged;
         public event Action<float> OnForceChanged;
@@ -65,8 +67,7 @@ namespace BallisticSim.Core.View
         public event Action OnFirePressed;
         public event Action OnCleanScenePressed;
         public event Action OnExportDataPressed;
-        public event Action OnSaveCloudPressed;
-        public event Action OnLoadCloudPressed;
+        public event Action OnShowHistoryPressed;
 
         private void OnEnable()
         {
@@ -88,8 +89,8 @@ namespace BallisticSim.Core.View
             _fireButton.onClick.AddListener(() => OnFirePressed?.Invoke());
             _cleanSceneButton.onClick.AddListener(() => OnCleanScenePressed?.Invoke());
             _exportDataButton.onClick.AddListener(() => OnExportDataPressed?.Invoke());
-            _saveCloudButton.onClick.AddListener(() => OnSaveCloudPressed?.Invoke());
-            _loadCloudButton.onClick.AddListener(() => OnLoadCloudPressed?.Invoke());
+            if (_showHistoryButton != null) _showHistoryButton.onClick.AddListener(() => OnShowHistoryPressed?.Invoke());
+            if (_closeHistoryButton != null) _closeHistoryButton.onClick.AddListener(() => HideHistoryPanel());
         }
 
         public void UpdateTelemetry(float velocityMagnitude, Vector3 position)
@@ -134,6 +135,17 @@ namespace BallisticSim.Core.View
         {
             if (_cloudStatusText != null)
                 _cloudStatusText.text = message;
+        }
+
+        public void ShowHistoryPanel(string content)
+        {
+            if (_historyContentText != null) _historyContentText.text = content;
+            if (_historyPanel != null) _historyPanel.SetActive(true);
+        }
+
+        public void HideHistoryPanel()
+        {
+            if (_historyPanel != null) _historyPanel.SetActive(false);
         }
     }
 }

@@ -342,14 +342,33 @@ namespace BallisticSim.Editor
                 new Color(0.1f, 0.3f, 0.1f, 0.8f));
 
             float cloudY = -5f;
-            TMP_Text cloudTitleText = CreateLabel(cloudPanel.transform, "CloudTitle", "CLOUD SAVE", ref cloudY);
+            TMP_Text cloudTitleText = CreateLabel(cloudPanel.transform, "CloudTitle", "CLOUD DATA", ref cloudY);
             cloudTitleText.fontSize = 20;
             cloudTitleText.alignment = TextAlignmentOptions.Center;
 
-            Button saveCloudButton = CreateButton(cloudPanel.transform, "SaveCloudButton", "SAVE TO CLOUD", ref cloudY, new Color(0.2f, 0.6f, 0.2f));
-            Button loadCloudButton = CreateButton(cloudPanel.transform, "LoadCloudButton", "LOAD FROM CLOUD", ref cloudY, new Color(0.6f, 0.4f, 0.2f));
+            Button showHistoryButton = CreateButton(cloudPanel.transform, "ShowHistoryButton", "SHOW HISTORY", ref cloudY, new Color(0.6f, 0.4f, 0.2f));
             TMP_Text cloudStatus = CreateLabel(cloudPanel.transform, "CloudStatusText", "Cloud Ready", ref cloudY);
             cloudStatus.alignment = TextAlignmentOptions.Center;
+
+            // 6. HISTORY PANEL (Center, large)
+            GameObject historyPanel = CreatePanel(canvasGo.transform, "HistoryPanel",
+                new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f),
+                Vector2.zero, new Vector2(600f, 400f),
+                new Color(0.1f, 0.1f, 0.2f, 0.95f));
+
+            float histY = -10f;
+            TMP_Text historyTitle = CreateLabel(historyPanel.transform, "HistoryTitle", "SIMULATION HISTORY", ref histY);
+            historyTitle.fontSize = 24;
+            historyTitle.alignment = TextAlignmentOptions.Center;
+            
+            TMP_Text historyContent = CreateLabel(historyPanel.transform, "HistoryContent", "Loading...", ref histY);
+            historyContent.fontSize = 14;
+            historyContent.alignment = TextAlignmentOptions.TopLeft;
+            historyContent.enableWordWrapping = true;
+            historyContent.rectTransform.sizeDelta = new Vector2(560f, 300f);
+
+            Button closeHistoryButton = CreateButton(historyPanel.transform, "CloseHistoryButton", "CLOSE", ref histY, new Color(0.6f, 0.2f, 0.2f));
+            historyPanel.SetActive(false);
 
             // WIRING
             BallisticView view = canvasGo.AddComponent<BallisticView>();
@@ -391,9 +410,11 @@ namespace BallisticSim.Editor
             so.FindProperty("_reportScoreText").objectReferenceValue = repScore;
             so.FindProperty("_cleanSceneButton").objectReferenceValue = cleanButton;
             so.FindProperty("_exportDataButton").objectReferenceValue = exportButton;
-            so.FindProperty("_saveCloudButton").objectReferenceValue = saveCloudButton;
-            so.FindProperty("_loadCloudButton").objectReferenceValue = loadCloudButton;
+            so.FindProperty("_showHistoryButton").objectReferenceValue = showHistoryButton;
             so.FindProperty("_cloudStatusText").objectReferenceValue = cloudStatus;
+            so.FindProperty("_historyPanel").objectReferenceValue = historyPanel;
+            so.FindProperty("_historyContentText").objectReferenceValue = historyContent;
+            so.FindProperty("_closeHistoryButton").objectReferenceValue = closeHistoryButton;
             so.ApplyModifiedPropertiesWithoutUndo();
 
             // EventSystem

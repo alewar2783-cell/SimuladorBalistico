@@ -6,7 +6,7 @@ namespace BallisticSim.Core.Repository
 {
     public abstract class SimulationRepository : MonoBehaviour
     {
-        public abstract Task SaveAsync(SimulationRecord simulation);
-        public abstract Task<SimulationRecord> LoadLastAsync();
+        public abstract Task SaveRecordAsync(SimulationRecord record);
+        public abstract Task<System.Collections.Generic.List<SimulationRecord>> LoadHistoryAsync();
     }
 }
