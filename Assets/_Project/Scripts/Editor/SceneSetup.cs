@@ -333,11 +333,23 @@ namespace BallisticSim.Editor
             repScore.fontSize = 22;
 
             Button exportButton = CreateButton(reportPanel.transform, "ExportDataButton", "EXPORT DATA", ref repY, new Color(0.3f, 0.3f, 0.6f));
-            Button saveCloudButton = CreateButton(reportPanel.transform, "SaveCloudButton", "SAVE CLOUD", ref repY, new Color(0.2f, 0.6f, 0.2f));
-            Button loadCloudButton = CreateButton(reportPanel.transform, "LoadCloudButton", "LOAD CLOUD", ref repY, new Color(0.6f, 0.4f, 0.2f));
-            TMP_Text cloudStatus = CreateLabel(reportPanel.transform, "CloudStatusText", "Cloud Ready", ref repY);
-            cloudStatus.alignment = TextAlignmentOptions.Center;
             reportPanel.SetActive(false);
+
+            // 5. CLOUD PANEL (Bottom Right)
+            GameObject cloudPanel = CreatePanel(canvasGo.transform, "CloudPanel",
+                new Vector2(1f, 0f), new Vector2(1f, 0f),
+                new Vector2(-10f, 10f), new Vector2(300f, 0f),
+                new Color(0.1f, 0.3f, 0.1f, 0.8f));
+
+            float cloudY = -5f;
+            TMP_Text cloudTitleText = CreateLabel(cloudPanel.transform, "CloudTitle", "CLOUD SAVE", ref cloudY);
+            cloudTitleText.fontSize = 20;
+            cloudTitleText.alignment = TextAlignmentOptions.Center;
+
+            Button saveCloudButton = CreateButton(cloudPanel.transform, "SaveCloudButton", "SAVE TO CLOUD", ref cloudY, new Color(0.2f, 0.6f, 0.2f));
+            Button loadCloudButton = CreateButton(cloudPanel.transform, "LoadCloudButton", "LOAD FROM CLOUD", ref cloudY, new Color(0.6f, 0.4f, 0.2f));
+            TMP_Text cloudStatus = CreateLabel(cloudPanel.transform, "CloudStatusText", "Cloud Ready", ref cloudY);
+            cloudStatus.alignment = TextAlignmentOptions.Center;
 
             // WIRING
             BallisticView view = canvasGo.AddComponent<BallisticView>();
