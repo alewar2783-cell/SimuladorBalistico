@@ -28,9 +28,10 @@ Este proyecto es un simulador balístico interactivo desarrollado en Unity 6.3 q
 * Durante el vuelo del proyectil, se muestra telemetría en vivo (velocidad actual y coordenadas espaciales).
 * Al impactar, el tiempo se ralentiza (Slow-Motion) para observar las colisiones. Luego de 3 segundos, se despliega el **Reporte de Tiro** en el borde derecho de la pantalla.
 * **Datos calculados:** Tiempo de vuelo, punto de impacto, velocidad relativa, impulso, piezas derribadas.
-* **Persistencia Local y Nube:** 
+* **Persistencia Local y Nube (Auto-guardado):** 
   * Se puede **Exportar a CSV** localmente usando el botón correspondiente.
-  * **Patrón Repository y Unity Gaming Services (UGS):** Se implementó una capa de persistencia remota mediante la clase abstracta `SimulationRepository`. Al presionar **SAVE TO CLOUD**, se empaqueta la simulación (`SimulationRecord`) y se guarda en la nube mediante `CloudSaveService`. Al volver a iniciar el simulador, se puede pulsar **LOAD FROM CLOUD** (en el panel inferior derecho) para restaurar los sliders a la última configuración exitosa desde cualquier PC.
+  * **Patrón Repository y Unity Gaming Services (UGS):** Al finalizar cada disparo, el controlador evalúa el impacto y sube automáticamente a la nube un paquete DTO (`SimulationRecord`) que incluye *Ángulo, Fuerza, Masa, Distancia, si hubo acierto o no, y la cantidad de objetos afectados*. Todo esto se gestiona mediante el `UgsSimulationRepository`.
+  * **Historial de Tiros:** El sistema en la nube almacena un array histórico con los últimos 10 disparos realizados. En cualquier momento se puede presionar el botón **SHOW HISTORY** (en el panel inferior derecho) para descargar de UGS la lista formateada y desplegarla en un panel central para comparar resultados.
 
 ### 5. Experiencia de Usuario y Cámaras Inteligentes
 * **Cámaras Contextuales:** Al ajustar los sliders del cañón, la cámara muestra una vista general. Al configurar el muro (columnas, filas, distancia), el sistema de Cinemachine transiciona automáticamente a una `TargetCamera` que sigue de cerca la posición paramétrica de las cajas.
@@ -45,8 +46,8 @@ Este proyecto es un simulador balístico interactivo desarrollado en Unity 6.3 q
 3. **Play:** Presiona Play en Unity. (Asegúrate de estar logueado y tener el proyecto vinculado en `Edit -> Project Settings -> Services` para que funcione el guardado en la nube).
 4. **Configurar:** Ajusta los sliders del arma (arriba) y del muro objetivo (abajo). Recomendamos probar el tiro inicial por defecto que apunta directo al centro del muro. La cámara cambiará dinámicamente según lo que estés ajustando.
 5. **Disparar:** Haz clic en **FIRE** (o usa la barra espaciadora). La cámara seguirá al proyectil.
-6. **Resolución y Guardado:** Observa el impacto. Analiza el reporte de tiro y, si lograste un buen golpe, presiona **SAVE TO CLOUD**.
-7. **Cargar:** Tras un **CLEAN SCENE** o reiniciar el juego, presiona **LOAD FROM CLOUD** para descargar tus valores de la nube y volver a realizar el tiro idéntico.
+6. **Resolución y Guardado Automático:** Observa el impacto. Analiza el reporte de tiro. El sistema registrará el tiro en tu historial de la nube automáticamente.
+7. **Historial:** Presiona **CLEAN SCENE** para resetear la pared. Luego, haz clic en **SHOW HISTORY** (abajo a la derecha) para descargar y ver tu lista de tiros desde UGS.
 
 ## 📂 Estructura de Assets y Arquitectura (MVC)
 El código está separado en 3 capas puras ubicadas en `Assets/_Project/Scripts/`:
