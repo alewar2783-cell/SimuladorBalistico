@@ -98,6 +98,16 @@ namespace BallisticSim.Core.View
             _positionText.text = $"X:{position.x:F2}  Y:{position.y:F2}  Z:{position.z:F2}";
         }
 
+        public void SetAngle(float angle)
+        {
+            if (_angleSlider != null) _angleSlider.value = angle;
+        }
+
+        public void SetForce(float force)
+        {
+            if (_forceSlider != null) _forceSlider.value = force;
+        }
+
         public void ClearTelemetry()
         {
             _velocityText.text = "Speed: ---";

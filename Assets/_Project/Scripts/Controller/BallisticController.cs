@@ -264,8 +264,8 @@ namespace BallisticSim.Core.Controllers
                     return;
                 }
 
-                HandleAngleChanged(record.angle);
-                _parameters.force = record.force;
+                _view.SetAngle(record.angle);
+                _view.SetForce(record.force);
                 // Note: distance is a result, we just loaded it for info. To display it, we would need to push it back to the view if needed.
                 _view.ShowCloudStatus($"Loaded! (Angle: {record.angle}, Force: {record.force})");
             }
