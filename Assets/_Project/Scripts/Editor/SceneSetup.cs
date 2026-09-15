@@ -439,6 +439,9 @@ namespace BallisticSim.Editor
 
             var follow = trackingGo.AddComponent<Unity.Cinemachine.CinemachineFollow>();
             follow.FollowOffset = new Vector3(0f, 1f, -4f);
+            var trackerSettings = follow.TrackerSettings;
+            trackerSettings.PositionDamping = Vector3.zero;
+            follow.TrackerSettings = trackerSettings;
 
             trackingGo.AddComponent<Unity.Cinemachine.CinemachineHardLookAt>();
 
@@ -447,6 +450,7 @@ namespace BallisticSim.Editor
             CinemachineCamera impact = impactGo.AddComponent<CinemachineCamera>();
             impactGo.transform.position = new Vector3(15f, 5f, 30f); // Fixed looking at 30m
             impactGo.transform.rotation = Quaternion.Euler(15f, -90f, 0f); // Look left towards the wall
+            impactGo.AddComponent<Unity.Cinemachine.CinemachineHardLookAt>();
             impact.Priority = 5;
 
             CameraController cc = rig.AddComponent<CameraController>();
