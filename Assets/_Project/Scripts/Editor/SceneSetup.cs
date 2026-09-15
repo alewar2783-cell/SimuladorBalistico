@@ -412,10 +412,12 @@ namespace BallisticSim.Editor
             Camera mainCam = Camera.main;
             if (mainCam != null)
             {
-                if (mainCam.GetComponent<Unity.Cinemachine.CinemachineBrain>() == null)
+                var brain = mainCam.GetComponent<Unity.Cinemachine.CinemachineBrain>();
+                if (brain == null)
                 {
-                    mainCam.gameObject.AddComponent<Unity.Cinemachine.CinemachineBrain>();
+                    brain = mainCam.gameObject.AddComponent<Unity.Cinemachine.CinemachineBrain>();
                 }
+                brain.DefaultBlend = new Unity.Cinemachine.CinemachineBlendDefinition(Unity.Cinemachine.CinemachineBlendDefinition.Styles.Cut, 0f);
             }
 
             GameObject existing = GameObject.Find("CameraRig");
@@ -435,10 +437,10 @@ namespace BallisticSim.Editor
             CinemachineCamera tracking = trackingGo.AddComponent<CinemachineCamera>();
             tracking.Priority = 10;
 
-            var thirdPerson = trackingGo.AddComponent<CinemachineThirdPersonFollow>();
-            thirdPerson.Damping = new Vector3(0.5f, 0.5f, 0.5f);
-            thirdPerson.ShoulderOffset = new Vector3(0.5f, 0.3f, 0f);
-            thirdPerson.CameraDistance = 3f;
+            var follow = trackingGo.AddComponent<Unity.Cinemachine.CinemachineFollow>();
+            follow.FollowOffset = new Vector3(0f, 1f, -4f);
+
+            trackingGo.AddComponent<Unity.Cinemachine.CinemachineHardLookAt>();
 
             GameObject impactGo = new GameObject("ImpactCamera");
             impactGo.transform.SetParent(rig.transform);
