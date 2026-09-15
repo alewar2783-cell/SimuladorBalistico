@@ -20,6 +20,7 @@ namespace BallisticSim.Core.Controllers
         [SerializeField] private TargetSpawner _spawner;
         [SerializeField] private GameObject _projectilePrefab;
         [SerializeField] private CameraController _cameraController;
+        [SerializeField] private BallisticSim.Core.Repository.SimulationRepository _repository;
 
         private BallisticParameters _parameters = new BallisticParameters();
         private BallisticResults _results = new BallisticResults();
@@ -49,6 +50,8 @@ namespace BallisticSim.Core.Controllers
             _view.OnFirePressed += HandleFire;
             _view.OnCleanScenePressed += HandleCleanScene;
             _view.OnExportDataPressed += HandleExportData;
+            _view.OnSaveCloudPressed += SaveSimulation;
+            _view.OnLoadCloudPressed += LoadSimulation;
         }
 
         private void OnDisable()
@@ -59,6 +62,8 @@ namespace BallisticSim.Core.Controllers
             _view.OnFirePressed -= HandleFire;
             _view.OnCleanScenePressed -= HandleCleanScene;
             _view.OnExportDataPressed -= HandleExportData;
+            _view.OnSaveCloudPressed -= SaveSimulation;
+            _view.OnLoadCloudPressed -= LoadSimulation;
         }
 
         private void Start()
@@ -216,6 +221,59 @@ namespace BallisticSim.Core.Controllers
         private void HandleExportData()
         {
             DataExporter.ExportToCsv(_parameters, _results);
+        }
+
+        public async void SaveSimulation()
+        {
+            if (_repository == null)
+            {
+                _view.ShowCloudStatus("Repository is null");
+                return;
+            }
+
+            try
+            {
+                _view.ShowCloudStatus("Saving...");
+                var record = new SimulationRecord(_parameters.angle, _parameters.force, _results.distance);
+                await _repository.SaveAsync(record);
+                _view.ShowCloudStatus("Simulation Saved!");
+            }
+            catch (System.Exception ex)
+            {
+                _view.ShowCloudStatus("Save Error!");
+                Debug.LogException(ex);
+            }
+        }
+
+        public async void LoadSimulation()
+        {
+            if (_repository == null)
+            {
+                _view.ShowCloudStatus("Repository is null");
+                return;
+            }
+
+            try
+            {
+                _view.ShowCloudStatus("Loading...");
+                SimulationRecord record = await _repository.LoadLastAsync();
+
+                if (record == null)
+                {
+                    _view.ShowCloudStatus("No saved simulation found.");
+                    return;
+                }
+
+                HandleAngleChanged(record.angle);
+                _parameters.force = record.force;
+                // Note: distance is a result, we just loaded it for info. To display it, we would need to push it back to the view if needed.
+                _view.ShowCloudStatus($"Loaded! (Angle: {record.angle}, Force: {record.force})");
+            }
+            catch (System.Exception ex)
+            {
+                _view.ShowCloudStatus("Load Error!");
+                Debug.LogException(ex);
+            }
         }
     }
 }

@@ -47,6 +47,9 @@ namespace BallisticSim.Core.View
         [SerializeField] private TMP_Text _reportScoreText;
         [SerializeField] private Button _cleanSceneButton;
         [SerializeField] private Button _exportDataButton;
+        [SerializeField] private Button _saveCloudButton;
+        [SerializeField] private Button _loadCloudButton;
+        [SerializeField] private TMP_Text _cloudStatusText;
 
         public event Action<float> OnAngleChanged;
         public event Action<float> OnForceChanged;
@@ -62,6 +65,8 @@ namespace BallisticSim.Core.View
         public event Action OnFirePressed;
         public event Action OnCleanScenePressed;
         public event Action OnExportDataPressed;
+        public event Action OnSaveCloudPressed;
+        public event Action OnLoadCloudPressed;
 
         private void OnEnable()
         {
@@ -83,6 +88,8 @@ namespace BallisticSim.Core.View
             _fireButton.onClick.AddListener(() => OnFirePressed?.Invoke());
             _cleanSceneButton.onClick.AddListener(() => OnCleanScenePressed?.Invoke());
             _exportDataButton.onClick.AddListener(() => OnExportDataPressed?.Invoke());
+            _saveCloudButton.onClick.AddListener(() => OnSaveCloudPressed?.Invoke());
+            _loadCloudButton.onClick.AddListener(() => OnLoadCloudPressed?.Invoke());
         }
 
         public void UpdateTelemetry(float velocityMagnitude, Vector3 position)
@@ -112,5 +119,11 @@ namespace BallisticSim.Core.View
         public void HideReport() => _reportPanel.SetActive(false);
         public void SetFireButtonInteractable(bool interactable) => _fireButton.interactable = interactable;
         public void SetCleanSceneButtonVisible(bool isVisible) { if (_cleanSceneButton != null) _cleanSceneButton.gameObject.SetActive(isVisible); }
+
+        public void ShowCloudStatus(string message)
+        {
+            if (_cloudStatusText != null)
+                _cloudStatusText.text = message;
+        }
     }
 }

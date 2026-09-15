@@ -169,8 +169,16 @@ namespace BallisticSim.Editor
             if (existing != null) Object.DestroyImmediate(existing);
 
             GameObject gm = new GameObject("GameManager");
-            gm.AddComponent<BallisticController>();
+            var controller = gm.AddComponent<BallisticController>();
             gm.AddComponent<TargetSpawner>();
+            
+            gm.AddComponent<BallisticSim.Core.Services.UgsInitializer>();
+            var repo = gm.AddComponent<BallisticSim.Core.Repository.UgsSimulationRepository>();
+            
+            SerializedObject so = new SerializedObject(controller);
+            so.FindProperty("_repository").objectReferenceValue = repo;
+            so.ApplyModifiedPropertiesWithoutUndo();
+
             return gm;
         }
 
@@ -325,6 +333,10 @@ namespace BallisticSim.Editor
             repScore.fontSize = 22;
 
             Button exportButton = CreateButton(reportPanel.transform, "ExportDataButton", "EXPORT DATA", ref repY, new Color(0.3f, 0.3f, 0.6f));
+            Button saveCloudButton = CreateButton(reportPanel.transform, "SaveCloudButton", "SAVE CLOUD", ref repY, new Color(0.2f, 0.6f, 0.2f));
+            Button loadCloudButton = CreateButton(reportPanel.transform, "LoadCloudButton", "LOAD CLOUD", ref repY, new Color(0.6f, 0.4f, 0.2f));
+            TMP_Text cloudStatus = CreateLabel(reportPanel.transform, "CloudStatusText", "Cloud Ready", ref repY);
+            cloudStatus.alignment = TextAlignmentOptions.Center;
             reportPanel.SetActive(false);
 
             // WIRING
@@ -367,6 +379,9 @@ namespace BallisticSim.Editor
             so.FindProperty("_reportScoreText").objectReferenceValue = repScore;
             so.FindProperty("_cleanSceneButton").objectReferenceValue = cleanButton;
             so.FindProperty("_exportDataButton").objectReferenceValue = exportButton;
+            so.FindProperty("_saveCloudButton").objectReferenceValue = saveCloudButton;
+            so.FindProperty("_loadCloudButton").objectReferenceValue = loadCloudButton;
+            so.FindProperty("_cloudStatusText").objectReferenceValue = cloudStatus;
             so.ApplyModifiedPropertiesWithoutUndo();
 
             // EventSystem
