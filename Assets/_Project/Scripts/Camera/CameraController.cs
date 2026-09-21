@@ -32,7 +32,9 @@ namespace BallisticSim.Core.Camera
             {
                 // Place camera looking at the wall from an angle
                 _targetCamera.transform.position = new Vector3(-8f, Mathf.Max(wallCenter.y + 2f, 4f), wallCenter.z - 8f);
-                _targetCamera.Target.LookAtTarget = null; // Clear tracking target if any
+                var tgt = _targetCamera.Target;
+                tgt.LookAtTarget = null; // Clear tracking target if any
+                _targetCamera.Target = tgt;
                 _targetCamera.transform.LookAt(wallCenter);
                 
                 _targetCamera.Priority = PRIORITY_ACTIVE;
@@ -45,21 +47,34 @@ namespace BallisticSim.Core.Camera
 
         public void FollowProjectile(Transform target)
         {
-            _trackingCamera.Target.TrackingTarget = target;
-            _trackingCamera.Target.LookAtTarget = target;
+            var tgt = _trackingCamera.Target;
+            tgt.TrackingTarget = target;
+            tgt.LookAtTarget = target;
+            _trackingCamera.Target = tgt;
             _trackingCamera.Priority = PRIORITY_ACTIVE;
             _overviewCamera.Priority = PRIORITY_INACTIVE;
             if (_targetCamera != null) _targetCamera.Priority = PRIORITY_INACTIVE;
             if (_impactCamera != null) _impactCamera.Priority = PRIORITY_INACTIVE;
         }
 
-        public void SetImpactActive(Transform impactCenter)
+        private Transform _impactTargetHelper;
+
+        public void SetImpactActive(Vector3 impactPoint)
         {
             if (_impactCamera == null) return;
             
+            if (_impactTargetHelper == null)
+            {
+                _impactTargetHelper = new GameObject("ImpactTargetHelper").transform;
+            }
+            _impactTargetHelper.position = impactPoint;
+
             // Position camera to the right and slightly back from the impact point
-            _impactCamera.transform.position = new Vector3(8f, 4f, impactCenter.position.z - 2f);
-            _impactCamera.Target.LookAtTarget = impactCenter;
+            _impactCamera.transform.position = new Vector3(8f, 4f, impactPoint.z - 2f);
+            
+            var tgt = _impactCamera.Target;
+            tgt.LookAtTarget = _impactTargetHelper;
+            _impactCamera.Target = tgt;
             
             _impactCamera.Priority = PRIORITY_ACTIVE;
             _trackingCamera.Priority = PRIORITY_INACTIVE;

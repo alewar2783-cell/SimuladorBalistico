@@ -164,7 +164,7 @@ namespace BallisticSim.Core.Controllers
             _results.relativeVelocity = relativeVelocity;
             _results.collisionImpulse = impulse;
             
-            _cameraController.SetImpactActive(_activeProjectile.transform);
+            _cameraController.SetImpactActive(impactPoint);
 
             StartCoroutine(ResolutionPhase());
         }
