@@ -353,7 +353,7 @@ namespace BallisticSim.Editor
             // 6. HISTORY PANEL (Center, large)
             GameObject historyPanel = CreatePanel(canvasGo.transform, "HistoryPanel",
                 new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f),
-                Vector2.zero, new Vector2(600f, 400f),
+                Vector2.zero, new Vector2(700f, 600f),
                 new Color(0.1f, 0.1f, 0.2f, 0.95f));
 
             float histY = -10f;
@@ -365,7 +365,10 @@ namespace BallisticSim.Editor
             historyContent.fontSize = 14;
             historyContent.alignment = TextAlignmentOptions.TopLeft;
             historyContent.enableWordWrapping = true;
-            historyContent.rectTransform.sizeDelta = new Vector2(560f, 300f);
+            
+            LayoutElement contentLe = historyContent.GetComponent<LayoutElement>();
+            contentLe.minHeight = 450f;
+            contentLe.preferredHeight = 450f;
 
             Button closeHistoryButton = CreateButton(historyPanel.transform, "CloseHistoryButton", "CLOSE", ref histY, new Color(0.6f, 0.2f, 0.2f));
             historyPanel.SetActive(false);

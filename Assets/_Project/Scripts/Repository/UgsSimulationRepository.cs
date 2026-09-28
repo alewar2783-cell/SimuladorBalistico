@@ -35,9 +35,17 @@ namespace BallisticSim.Core.Repository
                     continue;
                 }
 
-                string json = item.Value.Value.GetAs<string>();
-                SimulationRecord record = UnityEngine.JsonUtility.FromJson<SimulationRecord>(json);
-                history.Add(record);
+                try
+                {
+                    string json = item.Value.Value.GetAs<string>();
+                    SimulationRecord record = UnityEngine.JsonUtility.FromJson<SimulationRecord>(json);
+                    history.Add(record);
+                }
+                catch (System.Exception)
+                {
+                    // Ignore old or malformed keys (like our old 'simulation_history' which wasn't a string)
+                    UnityEngine.Debug.LogWarning($"Skipping unreadable history key: {item.Key}");
+                }
             }
 
             history.Sort((a, b) => string.Compare(a.timestamp, b.timestamp, System.StringComparison.Ordinal));
