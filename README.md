@@ -30,8 +30,8 @@ Este proyecto es un simulador balístico interactivo desarrollado en Unity 6.3 q
 * **Datos calculados:** Tiempo de vuelo, punto de impacto, velocidad relativa, impulso, piezas derribadas.
 * **Persistencia Local y Nube (Auto-guardado):** 
   * Se puede **Exportar a CSV** localmente usando el botón correspondiente.
-  * **Patrón Repository y Unity Gaming Services (UGS):** Al finalizar cada disparo, el controlador evalúa el impacto y sube automáticamente a la nube un paquete DTO (`SimulationRecord`) que incluye *Ángulo, Fuerza, Masa, Distancia, si hubo acierto o no, y la cantidad de objetos afectados*. Todo esto se gestiona mediante el `UgsSimulationRepository`.
-  * **Historial de Tiros:** El sistema en la nube almacena un array histórico con los últimos 10 disparos realizados. En cualquier momento se puede presionar el botón **SHOW HISTORY** (en el panel inferior derecho) para descargar de UGS la lista formateada y desplegarla en un panel central para comparar resultados.
+  * **Patrón Repository y Unity Gaming Services (UGS):** Al finalizar cada disparo, el controlador evalúa el impacto y sube automáticamente a la nube un registro (`SimulationRecord`). Dicho registro no pisa los anteriores, sino que se almacena utilizando la serialización JSON en una clave única basada en un identificador (`simulation_{guid}`). Se guarda: *Ángulo, Fuerza, Masa, Distancia, si hubo acierto o no, y la cantidad de objetos afectados*.
+  * **Historial de Tiros:** El sistema en la nube almacena cada disparo de forma independiente bajo el prefijo `simulation_`. En cualquier momento se puede presionar el botón **SHOW HISTORY** (en el panel inferior derecho) para descargar mediante `LoadAllAsync()` todos los registros del historial, los cuales son ordenados por fecha y desplegados en un panel central para comparar resultados.
 
 ### 5. Experiencia de Usuario y Cámaras Inteligentes
 * **Cámaras Contextuales:** Al ajustar los sliders del cañón, la cámara muestra una vista general. Al configurar el muro (columnas, filas, distancia), el sistema de Cinemachine transiciona automáticamente a una `TargetCamera` que sigue de cerca la posición paramétrica de las cajas.

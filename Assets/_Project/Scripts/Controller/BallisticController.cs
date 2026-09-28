@@ -261,7 +261,8 @@ namespace BallisticSim.Core.Controllers
                 }
 
                 System.Text.StringBuilder sb = new System.Text.StringBuilder();
-                for (int i = 0; i < history.Count; i++)
+                int startIdx = Mathf.Max(0, history.Count - 15);
+                for (int i = startIdx; i < history.Count; i++)
                 {
                     var r = history[i];
                     string hitTxt = r.hit ? "HIT" : "MISS";

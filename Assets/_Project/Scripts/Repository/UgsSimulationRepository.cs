@@ -5,48 +5,43 @@ using BallisticSim.Core.Model;
 
 namespace BallisticSim.Core.Repository
 {
-    [System.Serializable]
-    public class SimulationHistoryWrapper
-    {
-        public List<SimulationRecord> records = new List<SimulationRecord>();
-    }
-
     public class UgsSimulationRepository : SimulationRepository
     {
-        private const string HistoryKey = "simulation_history";
-        private const int MaxHistorySize = 10;
+        private const string HistoryPrefix = "simulation_";
 
         public override async Task SaveRecordAsync(SimulationRecord record)
         {
-            var history = await LoadHistoryAsync();
-            history.Add(record);
-            
-            if (history.Count > MaxHistorySize)
+            string json = UnityEngine.JsonUtility.ToJson(record);
+            string key = HistoryPrefix + record.id;
+
+            var playerData = new Dictionary<string, object>
             {
-                history.RemoveAt(0); // Keep last N records
-            }
+                { key, json }
+            };
 
-            var wrapper = new SimulationHistoryWrapper { records = history };
-            var data = new Dictionary<string, object> { { HistoryKey, wrapper } };
-
-            await CloudSaveService.Instance.Data.Player.SaveAsync(data);
+            await CloudSaveService.Instance.Data.Player.SaveAsync(playerData);
         }
 
         public override async Task<List<SimulationRecord>> LoadHistoryAsync()
         {
-            var keys = new HashSet<string> { HistoryKey };
-            var data = await CloudSaveService.Instance.Data.Player.LoadAsync(keys);
+            var playerData = await CloudSaveService.Instance.Data.Player.LoadAllAsync();
 
-            if (data.TryGetValue(HistoryKey, out var item))
+            List<SimulationRecord> history = new List<SimulationRecord>();
+
+            foreach (var item in playerData)
             {
-                var wrapper = item.Value.GetAs<SimulationHistoryWrapper>();
-                if (wrapper != null && wrapper.records != null)
+                if (!item.Key.StartsWith(HistoryPrefix))
                 {
-                    return wrapper.records;
+                    continue;
                 }
+
+                string json = item.Value.Value.GetAs<string>();
+                SimulationRecord record = UnityEngine.JsonUtility.FromJson<SimulationRecord>(json);
+                history.Add(record);
             }
 
-            return new List<SimulationRecord>();
+            history.Sort((a, b) => string.Compare(a.timestamp, b.timestamp, System.StringComparison.Ordinal));
+            return history;
         }
     }
 }
