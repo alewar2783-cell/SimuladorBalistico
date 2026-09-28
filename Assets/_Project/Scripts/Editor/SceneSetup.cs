@@ -240,23 +240,23 @@ namespace BallisticSim.Editor
                 new Color(0.1f, 0.1f, 0.15f, 0.8f));
 
             float yOffset = -10f;
-            TMP_Text titleWeapon = CreateLabel(weaponPanel.transform, "TitleWeapon", "WEAPON & PROJECTILE", ref yOffset);
+            TMP_Text titleWeapon = CreateLabel(weaponPanel.transform, "TitleWeapon", "ARMA Y PROYECTIL", ref yOffset);
             titleWeapon.fontSize = 18;
             titleWeapon.fontStyle = FontStyles.Bold;
 
-            TMP_Text angleLabel = CreateLabel(weaponPanel.transform, "AngleLabel", "Angle: 5.0°", ref yOffset);
+            TMP_Text angleLabel = CreateLabel(weaponPanel.transform, "AngleLabel", "Ángulo: 5.0°", ref yOffset);
             Slider angleSlider = CreateSlider(weaponPanel.transform, "AngleSlider", ref yOffset, 0f, 90f, 5f);
 
-            TMP_Text forceLabel = CreateLabel(weaponPanel.transform, "ForceLabel", "Initial Force: 50N", ref yOffset);
+            TMP_Text forceLabel = CreateLabel(weaponPanel.transform, "ForceLabel", "Fuerza Inicial: 50N", ref yOffset);
             Slider forceSlider = CreateSlider(weaponPanel.transform, "ForceSlider", ref yOffset, 10f, 200f, 50f);
 
-            TMP_Text massLabel = CreateLabel(weaponPanel.transform, "MassLabel", "Mass: 1.00kg", ref yOffset);
+            TMP_Text massLabel = CreateLabel(weaponPanel.transform, "MassLabel", "Masa: 1.00kg", ref yOffset);
             Slider massSlider = CreateSlider(weaponPanel.transform, "MassSlider", ref yOffset, 0.1f, 10f, 1f);
 
-            TMP_Text sizeLabel = CreateLabel(weaponPanel.transform, "BulletSizeLabel", "Size: 0.20m", ref yOffset);
+            TMP_Text sizeLabel = CreateLabel(weaponPanel.transform, "BulletSizeLabel", "Tamaño: 0.20m", ref yOffset);
             Slider sizeSlider = CreateSlider(weaponPanel.transform, "BulletSizeSlider", ref yOffset, 0.05f, 1f, 0.2f);
 
-            TMP_Text bounceLabel = CreateLabel(weaponPanel.transform, "BulletBounceLabel", "Bounciness: 0.30", ref yOffset);
+            TMP_Text bounceLabel = CreateLabel(weaponPanel.transform, "BulletBounceLabel", "Rebote: 0.30", ref yOffset);
             Slider bounceSlider = CreateSlider(weaponPanel.transform, "BulletBounceSlider", ref yOffset, 0f, 1f, 0.3f);
 
             GameObject spacer = new GameObject("Spacer");
@@ -264,8 +264,8 @@ namespace BallisticSim.Editor
             LayoutElement spacerLe = spacer.AddComponent<LayoutElement>();
             spacerLe.minHeight = 15f;
 
-            Button fireButton = CreateButton(weaponPanel.transform, "FireButton", "FIRE", ref yOffset, new Color(0.8f, 0.2f, 0.2f));
-            Button cleanButton = CreateButton(weaponPanel.transform, "CleanSceneButton", "CLEAN SCENE", ref yOffset, new Color(0.3f, 0.5f, 0.3f));
+            Button fireButton = CreateButton(weaponPanel.transform, "FireButton", "DISPARAR", ref yOffset, new Color(0.8f, 0.2f, 0.2f));
+            Button cleanButton = CreateButton(weaponPanel.transform, "CleanSceneButton", "LIMPIAR ESCENA", ref yOffset, new Color(0.3f, 0.5f, 0.3f));
             cleanButton.gameObject.SetActive(false);
 
 
@@ -280,26 +280,26 @@ namespace BallisticSim.Editor
             tgtRt.pivot = new Vector2(0f, 0f);
 
             float tyOffset = 10f;
-            TMP_Text titleTarget = CreateLabel(targetPanel.transform, "TitleTarget", "TARGET CONFIG", ref tyOffset);
+            TMP_Text titleTarget = CreateLabel(targetPanel.transform, "TitleTarget", "CONFIG. OBJETIVO", ref tyOffset);
             titleTarget.fontSize = 18;
             titleTarget.fontStyle = FontStyles.Bold;
 
-            TMP_Text distanceLabel = CreateLabel(targetPanel.transform, "DistanceLabel", "Distance: 30m", ref tyOffset);
+            TMP_Text distanceLabel = CreateLabel(targetPanel.transform, "DistanceLabel", "Distancia: 30m", ref tyOffset);
             Slider distanceSlider = CreateSlider(targetPanel.transform, "DistanceSlider", ref tyOffset, 10f, 100f, 30f);
 
-            TMP_Text colsLabel = CreateLabel(targetPanel.transform, "WallColsLabel", "Columns: 5", ref tyOffset);
+            TMP_Text colsLabel = CreateLabel(targetPanel.transform, "WallColsLabel", "Columnas: 5", ref tyOffset);
             Slider colsSlider = CreateSlider(targetPanel.transform, "WallColsSlider", ref tyOffset, 1f, 10f, 5f);
 
-            TMP_Text rowsLabel = CreateLabel(targetPanel.transform, "WallRowsLabel", "Rows: 5", ref tyOffset);
+            TMP_Text rowsLabel = CreateLabel(targetPanel.transform, "WallRowsLabel", "Filas: 5", ref tyOffset);
             Slider rowsSlider = CreateSlider(targetPanel.transform, "WallRowsSlider", ref tyOffset, 1f, 10f, 5f);
 
-            TMP_Text boxSizeLabel = CreateLabel(targetPanel.transform, "BoxSizeLabel", "Box Size: 1.00m", ref tyOffset);
+            TMP_Text boxSizeLabel = CreateLabel(targetPanel.transform, "BoxSizeLabel", "Tam. Caja: 1.00m", ref tyOffset);
             Slider boxSizeSlider = CreateSlider(targetPanel.transform, "BoxSizeSlider", ref tyOffset, 0.1f, 2f, 1f);
 
-            TMP_Text boxMassLabel = CreateLabel(targetPanel.transform, "BoxMassLabel", "Box Mass: 1.0kg", ref tyOffset);
+            TMP_Text boxMassLabel = CreateLabel(targetPanel.transform, "BoxMassLabel", "Masa Caja: 1.0kg", ref tyOffset);
             Slider boxMassSlider = CreateSlider(targetPanel.transform, "BoxMassSlider", ref tyOffset, 0.1f, 10f, 1f);
 
-            TMP_Text jointForceLabel = CreateLabel(targetPanel.transform, "JointForceLabel", "Joint Force: 50N", ref tyOffset);
+            TMP_Text jointForceLabel = CreateLabel(targetPanel.transform, "JointForceLabel", "Fuerza Uniones: 50N", ref tyOffset);
             Slider jointForceSlider = CreateSlider(targetPanel.transform, "JointForceSlider", ref tyOffset, 10f, 2000f, 50f);
 
 
@@ -310,7 +310,7 @@ namespace BallisticSim.Editor
                 new Color(0f, 0f, 0f, 0.5f));
 
             float telY = -5f;
-            TMP_Text velocityText = CreateLabel(telemetryPanel.transform, "VelocityText", "Speed: ---", ref telY);
+            TMP_Text velocityText = CreateLabel(telemetryPanel.transform, "VelocityText", "Velocidad: ---", ref telY);
             TMP_Text positionText = CreateLabel(telemetryPanel.transform, "PositionText", "X:---  Y:---  Z:---", ref telY);
 
             // 4. REPORT PANEL (Center)
@@ -320,19 +320,19 @@ namespace BallisticSim.Editor
                 new Color(0.1f, 0.1f, 0.1f, 0.9f));
 
             float repY = -10f;
-            TMP_Text titleText = CreateLabel(reportPanel.transform, "ReportTitle", "SHOT REPORT", ref repY);
+            TMP_Text titleText = CreateLabel(reportPanel.transform, "ReportTitle", "REPORTE DE TIRO", ref repY);
             titleText.fontSize = 24;
             titleText.alignment = TextAlignmentOptions.Center;
-            TMP_Text repDistance = CreateLabel(reportPanel.transform, "ReportDistance", "Distance: ---", ref repY);
-            TMP_Text repFlightTime = CreateLabel(reportPanel.transform, "ReportFlightTime", "Flight Time: ---", ref repY);
-            TMP_Text repImpact = CreateLabel(reportPanel.transform, "ReportImpactPoint", "Impact: ---", ref repY);
-            TMP_Text repVelocity = CreateLabel(reportPanel.transform, "ReportVelocity", "Rel. Velocity: ---", ref repY);
-            TMP_Text repImpulse = CreateLabel(reportPanel.transform, "ReportImpulse", "Impulse: ---", ref repY);
-            TMP_Text repBroken = CreateLabel(reportPanel.transform, "ReportBrokenJoints", "Broken Joints: ---", ref repY);
-            TMP_Text repScore = CreateLabel(reportPanel.transform, "ReportScore", "Score: ---", ref repY);
+            TMP_Text repDistance = CreateLabel(reportPanel.transform, "ReportDistance", "Distancia: ---", ref repY);
+            TMP_Text repFlightTime = CreateLabel(reportPanel.transform, "ReportFlightTime", "Tiempo de Vuelo: ---", ref repY);
+            TMP_Text repImpact = CreateLabel(reportPanel.transform, "ReportImpactPoint", "Impacto: ---", ref repY);
+            TMP_Text repVelocity = CreateLabel(reportPanel.transform, "ReportVelocity", "Vel. Relativa: ---", ref repY);
+            TMP_Text repImpulse = CreateLabel(reportPanel.transform, "ReportImpulse", "Impulso: ---", ref repY);
+            TMP_Text repBroken = CreateLabel(reportPanel.transform, "ReportBrokenJoints", "Piezas Rotas: ---", ref repY);
+            TMP_Text repScore = CreateLabel(reportPanel.transform, "ReportScore", "Puntaje: ---", ref repY);
             repScore.fontSize = 22;
 
-            Button exportButton = CreateButton(reportPanel.transform, "ExportDataButton", "EXPORT DATA", ref repY, new Color(0.3f, 0.3f, 0.6f));
+            Button exportButton = CreateButton(reportPanel.transform, "ExportDataButton", "EXPORTAR DATOS", ref repY, new Color(0.3f, 0.3f, 0.6f));
             reportPanel.SetActive(false);
 
             // 5. CLOUD PANEL (Bottom Right)
@@ -342,12 +342,12 @@ namespace BallisticSim.Editor
                 new Color(0.1f, 0.3f, 0.1f, 0.8f));
 
             float cloudY = -5f;
-            TMP_Text cloudTitleText = CreateLabel(cloudPanel.transform, "CloudTitle", "CLOUD DATA", ref cloudY);
+            TMP_Text cloudTitleText = CreateLabel(cloudPanel.transform, "CloudTitle", "DATOS EN LA NUBE", ref cloudY);
             cloudTitleText.fontSize = 20;
             cloudTitleText.alignment = TextAlignmentOptions.Center;
 
-            Button showHistoryButton = CreateButton(cloudPanel.transform, "ShowHistoryButton", "SHOW HISTORY", ref cloudY, new Color(0.6f, 0.4f, 0.2f));
-            TMP_Text cloudStatus = CreateLabel(cloudPanel.transform, "CloudStatusText", "Cloud Ready", ref cloudY);
+            Button showHistoryButton = CreateButton(cloudPanel.transform, "ShowHistoryButton", "VER HISTORIAL", ref cloudY, new Color(0.6f, 0.4f, 0.2f));
+            TMP_Text cloudStatus = CreateLabel(cloudPanel.transform, "CloudStatusText", "Nube Lista", ref cloudY);
             cloudStatus.alignment = TextAlignmentOptions.Center;
 
             // 6. HISTORY PANEL (Center, large)
@@ -357,11 +357,11 @@ namespace BallisticSim.Editor
                 new Color(0.1f, 0.1f, 0.2f, 0.95f));
 
             float histY = -10f;
-            TMP_Text historyTitle = CreateLabel(historyPanel.transform, "HistoryTitle", "SIMULATION HISTORY", ref histY);
+            TMP_Text historyTitle = CreateLabel(historyPanel.transform, "HistoryTitle", "HISTORIAL DE SIMULACIONES", ref histY);
             historyTitle.fontSize = 24;
             historyTitle.alignment = TextAlignmentOptions.Center;
             
-            TMP_Text historyContent = CreateLabel(historyPanel.transform, "HistoryContent", "Loading...", ref histY);
+            TMP_Text historyContent = CreateLabel(historyPanel.transform, "HistoryContent", "Cargando...", ref histY);
             historyContent.fontSize = 14;
             historyContent.alignment = TextAlignmentOptions.TopLeft;
             historyContent.enableWordWrapping = true;
@@ -370,7 +370,7 @@ namespace BallisticSim.Editor
             contentLe.minHeight = 450f;
             contentLe.preferredHeight = 450f;
 
-            Button closeHistoryButton = CreateButton(historyPanel.transform, "CloseHistoryButton", "CLOSE", ref histY, new Color(0.6f, 0.2f, 0.2f));
+            Button closeHistoryButton = CreateButton(historyPanel.transform, "CloseHistoryButton", "CERRAR", ref histY, new Color(0.6f, 0.2f, 0.2f));
             historyPanel.SetActive(false);
 
             // WIRING

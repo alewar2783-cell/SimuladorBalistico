@@ -73,18 +73,18 @@ namespace BallisticSim.Core.View
         {
             if (_angleSlider == null) return;
 
-            _angleSlider.onValueChanged.AddListener(v => { _angleLabelText.text = $"Angle: {v:F1}°"; OnAngleChanged?.Invoke(v); });
-            _forceSlider.onValueChanged.AddListener(v => { _forceLabelText.text = $"Force: {v:F0}N"; OnForceChanged?.Invoke(v); });
-            _massSlider.onValueChanged.AddListener(v => { _massLabelText.text = $"Mass: {v:F2}kg"; OnMassChanged?.Invoke(v); });
-            _bulletSizeSlider.onValueChanged.AddListener(v => { _bulletSizeLabelText.text = $"Size: {v:F2}m"; OnBulletSizeChanged?.Invoke(v); });
-            _bulletBouncinessSlider.onValueChanged.AddListener(v => { _bulletBouncinessLabelText.text = $"Bounce: {v:F2}"; OnBulletBouncinessChanged?.Invoke(v); });
+            _angleSlider.onValueChanged.AddListener(v => { _angleLabelText.text = $"Ángulo: {v:F1}°"; OnAngleChanged?.Invoke(v); });
+            _forceSlider.onValueChanged.AddListener(v => { _forceLabelText.text = $"Fuerza: {v:F0}N"; OnForceChanged?.Invoke(v); });
+            _massSlider.onValueChanged.AddListener(v => { _massLabelText.text = $"Masa: {v:F2}kg"; OnMassChanged?.Invoke(v); });
+            _bulletSizeSlider.onValueChanged.AddListener(v => { _bulletSizeLabelText.text = $"Tamaño: {v:F2}m"; OnBulletSizeChanged?.Invoke(v); });
+            _bulletBouncinessSlider.onValueChanged.AddListener(v => { _bulletBouncinessLabelText.text = $"Rebote: {v:F2}"; OnBulletBouncinessChanged?.Invoke(v); });
             
-            _distanceSlider.onValueChanged.AddListener(v => { _distanceLabelText.text = $"Distance: {v:F0}m"; OnDistanceChanged?.Invoke(v); });
-            _wallColsSlider.onValueChanged.AddListener(v => { _wallColsLabelText.text = $"Columns: {v:F0}"; OnWallColsChanged?.Invoke(Mathf.RoundToInt(v)); });
-            _wallRowsSlider.onValueChanged.AddListener(v => { _wallRowsLabelText.text = $"Rows: {v:F0}"; OnWallRowsChanged?.Invoke(Mathf.RoundToInt(v)); });
-            _boxSizeSlider.onValueChanged.AddListener(v => { _boxSizeLabelText.text = $"Box Size: {v:F2}m"; OnBoxSizeChanged?.Invoke(v); });
-            _boxMassSlider.onValueChanged.AddListener(v => { _boxMassLabelText.text = $"Box Mass: {v:F1}kg"; OnBoxMassChanged?.Invoke(v); });
-            _jointBreakForceSlider.onValueChanged.AddListener(v => { _jointBreakForceLabelText.text = $"Joint Force: {v:F0}N"; OnJointBreakForceChanged?.Invoke(v); });
+            _distanceSlider.onValueChanged.AddListener(v => { _distanceLabelText.text = $"Distancia: {v:F0}m"; OnDistanceChanged?.Invoke(v); });
+            _wallColsSlider.onValueChanged.AddListener(v => { _wallColsLabelText.text = $"Columnas: {v:F0}"; OnWallColsChanged?.Invoke(Mathf.RoundToInt(v)); });
+            _wallRowsSlider.onValueChanged.AddListener(v => { _wallRowsLabelText.text = $"Filas: {v:F0}"; OnWallRowsChanged?.Invoke(Mathf.RoundToInt(v)); });
+            _boxSizeSlider.onValueChanged.AddListener(v => { _boxSizeLabelText.text = $"Tam. Caja: {v:F2}m"; OnBoxSizeChanged?.Invoke(v); });
+            _boxMassSlider.onValueChanged.AddListener(v => { _boxMassLabelText.text = $"Masa Caja: {v:F1}kg"; OnBoxMassChanged?.Invoke(v); });
+            _jointBreakForceSlider.onValueChanged.AddListener(v => { _jointBreakForceLabelText.text = $"Fuerza Uniones: {v:F0}N"; OnJointBreakForceChanged?.Invoke(v); });
 
             _fireButton.onClick.AddListener(() => OnFirePressed?.Invoke());
             _cleanSceneButton.onClick.AddListener(() => OnCleanScenePressed?.Invoke());
@@ -95,7 +95,7 @@ namespace BallisticSim.Core.View
 
         public void UpdateTelemetry(float velocityMagnitude, Vector3 position)
         {
-            _velocityText.text = $"Speed: {velocityMagnitude:F2} m/s";
+            _velocityText.text = $"Velocidad: {velocityMagnitude:F2} m/s";
             _positionText.text = $"X:{position.x:F2}  Y:{position.y:F2}  Z:{position.z:F2}";
         }
 
@@ -111,19 +111,19 @@ namespace BallisticSim.Core.View
 
         public void ClearTelemetry()
         {
-            _velocityText.text = "Speed: ---";
+            _velocityText.text = "Velocidad: ---";
             _positionText.text = "X:---  Y:---  Z:---";
         }
 
         public void ShowReport(float distance, float flightTime, Vector3 impactPoint, float relativeVelocity, float collisionImpulse, int brokenJoints, int score)
         {
-            _reportDistanceText.text = $"Distance: {distance:F2}m";
-            _reportFlightTimeText.text = $"Flight Time: {flightTime:F2}s";
-            _reportImpactPointText.text = $"Impact: ({impactPoint.x:F2}, {impactPoint.y:F2}, {impactPoint.z:F2})";
-            _reportVelocityText.text = $"Rel. Velocity: {relativeVelocity:F2} m/s";
-            _reportImpulseText.text = $"Impulse: {collisionImpulse:F2}";
-            _reportBrokenJointsText.text = $"Broken Joints: {brokenJoints}";
-            _reportScoreText.text = $"Score: {score}";
+            _reportDistanceText.text = $"Distancia: {distance:F2}m";
+            _reportFlightTimeText.text = $"Tiempo de Vuelo: {flightTime:F2}s";
+            _reportImpactPointText.text = $"Impacto: ({impactPoint.x:F2}, {impactPoint.y:F2}, {impactPoint.z:F2})";
+            _reportVelocityText.text = $"Vel. Relativa: {relativeVelocity:F2} m/s";
+            _reportImpulseText.text = $"Impulso: {collisionImpulse:F2}";
+            _reportBrokenJointsText.text = $"Piezas Rotas: {brokenJoints}";
+            _reportScoreText.text = $"Puntaje: {score}";
             _reportPanel.SetActive(true);
         }
 

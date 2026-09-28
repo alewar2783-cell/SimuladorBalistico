@@ -228,18 +228,18 @@ namespace BallisticSim.Core.Controllers
         private async void SaveSimulationToHistory()
         {
             if (_repository == null) return;
-            _view.ShowCloudStatus("Saving shot to cloud...");
+            _view.ShowCloudStatus("Guardando tiro en la nube...");
             
             try
             {
                 bool isHit = _results.brokenJoints > 0;
                 var record = new SimulationRecord(_parameters.angle, _parameters.force, _parameters.mass, _results.distance, isHit, _results.brokenJoints);
                 await _repository.SaveRecordAsync(record);
-                _view.ShowCloudStatus("Saved automatically");
+                _view.ShowCloudStatus("Guardado Automático");
             }
             catch (System.Exception ex)
             {
-                _view.ShowCloudStatus("Save Error");
+                _view.ShowCloudStatus("Error al guardar");
                 Debug.LogException(ex);
             }
         }
@@ -248,15 +248,15 @@ namespace BallisticSim.Core.Controllers
         {
             if (_repository == null) return;
             
-            _view.ShowCloudStatus("Fetching History...");
+            _view.ShowCloudStatus("Descargando Historial...");
             try
             {
                 var history = await _repository.LoadHistoryAsync();
-                _view.ShowCloudStatus("History Loaded");
+                _view.ShowCloudStatus("Historial Cargado");
 
                 if (history.Count == 0)
                 {
-                    _view.ShowHistoryPanel("No shots recorded yet.");
+                    _view.ShowHistoryPanel("No hay tiros guardados aún.");
                     return;
                 }
 
@@ -265,14 +265,14 @@ namespace BallisticSim.Core.Controllers
                 for (int i = startIdx; i < history.Count; i++)
                 {
                     var r = history[i];
-                    string hitTxt = r.hit ? "HIT" : "MISS";
-                    sb.AppendLine($"[Shot {i+1}] {hitTxt} | Angle: {r.angle:F1}° | Force: {r.force:F0}N | Mass: {r.mass:F1}kg | Dist: {r.distance:F1}m | Affected: {r.affectedObjects}");
+                    string hitTxt = r.hit ? "ACIERTO" : "FALLO";
+                    sb.AppendLine($"[Tiro {i+1}] {hitTxt} | Ángulo: {r.angle:F1}° | Fuerza: {r.force:F0}N | Masa: {r.mass:F1}kg | Dist: {r.distance:F1}m | Afectados: {r.affectedObjects}");
                 }
                 _view.ShowHistoryPanel(sb.ToString());
             }
             catch (System.Exception ex)
             {
-                _view.ShowCloudStatus("Load Error!");
+                _view.ShowCloudStatus("Error al cargar!");
                 Debug.LogException(ex);
             }
         }
